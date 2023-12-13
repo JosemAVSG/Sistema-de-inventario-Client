@@ -25,8 +25,7 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
-      if (loginError > 0){
-
+      if (loginError){
         setTimeout(() => {
           dispatch(signinFailure(null));
      }, 5000);
