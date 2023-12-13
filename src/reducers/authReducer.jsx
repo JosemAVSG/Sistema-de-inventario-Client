@@ -12,11 +12,11 @@ const initialState = {
           ...state,
           isAuthenticated: action.payload,
         };
-      case "SET_USER":
-        return {
-          ...state,
-          user: action.payload,
-        };
+      // case "SET_USER":
+      //   return {
+      //     ...state,
+      //     user: action.payload,
+      //   };
         case "SET_LOADING":
             return {
                 ...state,
@@ -29,13 +29,22 @@ const initialState = {
           user: null,
         };
       case "SIGNUP_SUCCESS":
-      case "LOGIN_SUCCESS":
-        return {
+         return {
           ...state,
           isAuthenticated: true,
           user: action.payload,
         };
+      case "LOGIN_SUCCESS":
+        return {
+          ...state,
+          user: action.payload,
+        };
       case "SIGNUP_FAILURE":
+        return {
+          ...state,
+          isAuthenticated: false,
+          errors: action.payload,
+        }
       case "LOGIN_FAILURE":
         return {
           ...state,
