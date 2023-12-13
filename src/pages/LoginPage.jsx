@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { signinUser, verifyTokenAction } from "../redux/actions";
+import { signinUser,signinFailure } from "../redux/actions";
 import {useDispatch,useSelector} from 'react-redux'
 const LoginPage = () => {
   const {
@@ -12,39 +12,37 @@ const LoginPage = () => {
 
   const dispatch = useDispatch();
   const navigation = useNavigate();
+
   const isAuthenticated = useSelector((state)=> state.auth.isAuthenticated);
   const loginError= useSelector((state) => state.auth.errors);
-  const [userErrors, setErrors ] = ([]);
-  setErrors(loginError);
 
   const submiting = handleSubmit((data) => {
      dispatch(signinUser(data));
-
   });
 
   const handleRegister = () => {
     navigation("/register"); // Navega a la ruta /task al hacer clic en el botón
   };
+
+  useEffect(() => {
+      if (loginError > 0){
+
+        setTimeout(() => {
+          dispatch(signinFailure(null));
+     }, 5000);
+      }
+  }, [loginError]);
+ 
+ 
+
   useEffect(() => {
     if (isAuthenticated) navigation("/home");
   }, [isAuthenticated]);
 
-  useEffect(() => {
-    if(userErrors.length > 0){
-      setTimeout(()=>{
-          setErrors([])
-      }, 5000)
-    }
-  }, [userErrors]);
-
-  useEffect(()=>{
-      dispatch(verifyTokenAction());
-  },[])
-
   return (
     <div className="h-screen flex justify-center items-center ">
       <div className="bg-zinc-800 max-w-md  p-10 rounded-md ">
-        {userErrors.map((error, i) => (
+        {loginError.map((error, i) => (
           <div key={i} className="bg-red-500 p-2 text-center text-white">
             {error}
           </div>

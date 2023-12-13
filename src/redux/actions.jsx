@@ -17,7 +17,7 @@ export const signinUser = (userData) => {
     try {
       const res = await loginRequest(userData);
       dispatch(signinSuccess(res.data));
-      dispatch(verifyTokenAction()); // Verificar token después de iniciar sesión
+      dispatch(verifyTokenAction()); // Verificar token después 6de iniciar sesión
     } catch (error) {
       dispatch(signinFailure(error.response.data));
     }
@@ -31,6 +31,7 @@ export const logoutUser = () => {
   };
 };
 
+
 export const verifyTokenAction = () => {
   return async (dispatch) => {
     const cookies = Cookie.get();
@@ -40,7 +41,7 @@ export const verifyTokenAction = () => {
       dispatch(setLoading(false));
       return;
     }
-
+        
     try {
       const res = await verifyToken(cookies.token);
       console.log(res);

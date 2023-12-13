@@ -42,13 +42,15 @@ const initialState = {
       case "SIGNUP_FAILURE":
         return {
           ...state,
-          isAuthenticated: false,
+
           errors: action.payload,
         }
       case "LOGIN_FAILURE":
         return {
           ...state,
-          isAuthenticated: false,
+          clearError(state) {
+            state.error = null;
+          },
           errors: action.payload,
         };
       default:
