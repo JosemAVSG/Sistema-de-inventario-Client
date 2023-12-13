@@ -33,13 +33,13 @@ const LoginPage = () => {
     if(userErrors.length > 0){
       setTimeout(()=>{
           setErrors([])
-      }, 6000)
+      }, 5000)
     }
   }, [userErrors]);
 
   useEffect(()=>{
       dispatch(verifyTokenAction());
-  },[isAuthenticated])
+  },[])
 
   return (
     <div className="h-screen flex justify-center items-center ">
