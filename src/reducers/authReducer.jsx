@@ -48,9 +48,7 @@ const initialState = {
       case "LOGIN_FAILURE":
         return {
           ...state,
-          clearError(state) {
-            state.error = null;
-          },
+
           errors: action.payload,
         };
       default:
