@@ -12,12 +12,14 @@ const LoginPage = () => {
 
   const dispatch = useDispatch();
   const navigation = useNavigate();
-
   const isAuthenticated = useSelector((state)=> state.auth.isAuthenticated);
   const loginError= useSelector((state) => state.auth.errors);
+  const [userErrors, setErrors ] = ([]);
+  setErrors(loginError);
 
   const submiting = handleSubmit((data) => {
      dispatch(signinUser(data));
+
   });
 
   const handleRegister = () => {
@@ -27,14 +29,22 @@ const LoginPage = () => {
     if (isAuthenticated) navigation("/home");
   }, [isAuthenticated]);
 
+  useEffect(() => {
+    if(userErrors.length > 0){
+      setTimeout(()=>{
+          setErrors([])
+      }, 6000)
+    }
+  }, [userErrors]);
+
   useEffect(()=>{
       dispatch(verifyTokenAction());
-  },[])
+  },[isAuthenticated])
 
   return (
     <div className="h-screen flex justify-center items-center ">
       <div className="bg-zinc-800 max-w-md  p-10 rounded-md ">
-        {loginError.map((error, i) => (
+        {userErrors.map((error, i) => (
           <div key={i} className="bg-red-500 p-2 text-center text-white">
             {error}
           </div>
