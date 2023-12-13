@@ -25,10 +25,10 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
-      if (loginError){
+      if (loginError.length > 0){
         setTimeout(() => {
           dispatch(signinFailure([]));
-     }, 5000);
+     }, 8000);
       }
   }, [loginError]);
  
