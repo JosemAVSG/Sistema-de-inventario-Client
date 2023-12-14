@@ -35,12 +35,12 @@ export const logoutUser = () => {
 export const verifyTokenAction = () => {
   return async (dispatch) => {
     const cookies = Cookie.get();
-    // console.log(cookies);
-    if (!cookies.token) {
-      dispatch(setAuthentication(false));
-      dispatch(setLoading(false));
-      return;
-    }else{ 
+    console.log(cookies);
+    // if (!cookies.token) {
+    //   dispatch(setAuthentication(false));
+    //   dispatch(setLoading(false));
+    //   return;
+    // }
     try {
       const res = await verifyToken(cookies.token);
       console.log(res);
@@ -54,7 +54,7 @@ export const verifyTokenAction = () => {
       dispatch(setAuthentication(false));
       dispatch(setLoading(false));
     }
-  }
+  
   };
 
 };
