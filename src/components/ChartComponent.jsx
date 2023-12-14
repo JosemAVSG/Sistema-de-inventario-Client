@@ -1,15 +1,15 @@
 import { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import { useDispatch, useSelector } from 'react-redux';
-import { getsells } from '../redux/actionTransaccion';
+import { getsells,getbuys } from '../redux/actionTransaccion';
 const ChartComponent = () => {
   const chartRef = useRef();
   const dispatch = useDispatch()
   const ventas = useSelector(state =>state.transacciones.ventas);
-  
+  const compras = useSelector (state => state.transacciones.compras)
   useEffect(()=>{
      dispatch(getsells());
-
+    dispatch(getbuys());
   },[])
   console.log(ventas);
   const startDate = '2023-12-01';
@@ -18,9 +18,11 @@ const ChartComponent = () => {
   const salesWithinRange = ventas.filter((ventas) => {
     return ventas.createdAt >= startDate && ventas.createdAt <= endDate;
   });
-  console.log(salesWithinRange);
+  const buyWithinRange = compras.filter((compras)=> {return compras.createdAt >= startDate && compras.createdAt <=endDate})
+
+  const totalbuysWithinRange = buyWithinRange.length;
   const totalSalesWithinRange = salesWithinRange.length;
-  console.log(totalSalesWithinRange);
+
   useEffect(() => {
     const ctx = chartRef.current.getContext('2d');
     // Datos y opciones del gráfico
@@ -34,7 +36,7 @@ const ChartComponent = () => {
         borderWidth: 1,
       },{
         label: 'Compras Mensuales',
-        data: [2,0,0,0,0],
+        data: [totalbuysWithinRange,0,0,0,0],
         backgroundColor: 'rgba(81, 32, 160, 0.897)',
         borderColor: '#3c4855',
         borderWidth: 1,
