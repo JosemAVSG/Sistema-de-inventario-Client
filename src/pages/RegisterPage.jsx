@@ -58,7 +58,7 @@ const RegisterPage = () => {
             {errors.password && (
                 <p className="text-red-500">Username is required</p>
             )}
-            <button type="submit">Registrarse</button>
+            <button type="submit" className='bg-cyan-600 rounded-lg px-4 py-1'>Registrarse</button>
             </form>
         </div>
         </div>

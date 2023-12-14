@@ -33,7 +33,7 @@ const LoginPage = () => {
   }, [loginError]);
  
  
-
+  
   useEffect(() => {
     if (isAuthenticated) navigation("/home");
   }, [isAuthenticated]);
@@ -67,7 +67,7 @@ const LoginPage = () => {
             <p className="text-red-500">Username is required</p>
           )}
           <div className="flex justify-between py-5">
-            <button type="submit" className='bg-indigo-700 rounded-lg px-4 py-1' >Login</button>
+            <button type="submit" className='bg-cyan-600 rounded-lg px-4 py-1' >Login</button>
           <button type="button"className='bg-indigo-700 rounded-lg px-4 py-1'  onClick={handleRegister}>
             Register here
           </button>

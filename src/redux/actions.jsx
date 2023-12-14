@@ -36,15 +36,17 @@ export const verifyTokenAction = () => {
   return async (dispatch) => {
     const cookies = Cookie.get();
     // console.log(cookies);
-    // if (!cookies.token) {
-    //   dispatch(setAuthentication(false));
-    //   dispatch(setLoading(false));
-    //   return;
-    // }
+    if (!cookies.token) {
+      dispatch(setAuthentication(false));
+      dispatch(setLoading(false));
+      return;
+    }else{ 
     try {
       const res = await verifyToken(cookies.token);
       console.log(res);
-      if (!res.data) return dispatch(setAuthentication(false));
+      if (!res.data){
+        dispatch(setAuthentication(false));
+      } 
       dispatch(setAuthentication(true));
       dispatch(setLoading(false));
       // dispatch(setUser(res.data));
@@ -52,6 +54,7 @@ export const verifyTokenAction = () => {
       dispatch(setAuthentication(false));
       dispatch(setLoading(false));
     }
+  }
   };
 
 };
