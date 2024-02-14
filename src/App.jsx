@@ -16,6 +16,7 @@ import VentasFromPage from "./pages/VentasFromPage";
 import VentasPage from "./pages/VentasPage";
 import ComprasPage from "./pages/ComprasPage";
 import ComprasFromPage from "./pages/ComprasFromPage";
+import Welcome from "./pages/WelcomePage";
 function App() {
   return (
     <Router>
@@ -25,7 +26,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/*" element={<Error404 />} />
-
+        <Route path="/" element={<Welcome/>}/>
         <Route element={<ProtectedRoutes />}>
           <Route path="/categoria" element={<CategoriaPage />} />
           <Route path="/add-categoria" element={<CategoriaFormPage />} />

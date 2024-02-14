@@ -49,7 +49,7 @@ export const verifyTokenAction = () => {
       } 
       dispatch(setAuthentication(true));
       dispatch(setLoading(false));
-      // dispatch(setUser(res.data));
+       dispatch(setUser(res.data));
     } catch (error) {
       dispatch(setAuthentication(false));
       dispatch(setLoading(false));
@@ -68,10 +68,10 @@ export const setAuthentication = (isAuthenticated) => ({
   payload: isAuthenticated,
 });
 
-// export const setUser = (userData) => ({
-//   type: 'SET_USER',
-//   payload: userData,
-// });
+export const setUser = (userData) => ({
+  type: 'SET_USER',
+  payload: userData,
+});
 
 export const setLogout = () => ({
   type: 'LOGOUT',

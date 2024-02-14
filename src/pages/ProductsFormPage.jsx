@@ -93,7 +93,7 @@ const ProductsFormPage = () => {
         <select className=" w-full bg-zinc-700 px-4 py-2 rounded-md my-2"{...register("categoria")}>
           <option value="" >Selecciona una categoría</option>
           {categorias.map((category) => (
-            <option key={category.id} value={category._id}>
+            <option key={category._id} value={category._id}>
               {category.name}
             </option>
           ))}
@@ -101,7 +101,7 @@ const ProductsFormPage = () => {
         <select className=" w-full bg-zinc-700 px-4 py-2 rounded-md my-2"{...register("proveedor")}>
           <option value="">Selecciona un proveedor</option>
           {proveedores.map((proveedor) => (
-            <option key={proveedor.id} value={proveedor._id}>
+            <option key={proveedor._id} value={proveedor._id}>
               {proveedor.nombre}
             </option>
           ))}

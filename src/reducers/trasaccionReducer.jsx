@@ -4,7 +4,14 @@ const initialState = {
   transaccion:null,
   loading: true,
   error: null,
+  cierreDiarioRealizado:false,
+  VentasFiltradas:{},
+  ComprasFiltradas:{},
+  cierresDiarios:[]
 };
+
+
+
 
 const trasaccionReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -19,6 +26,19 @@ const trasaccionReducer = (state = initialState, action) => {
         ...state,
         ventas: [],
         error: action.payload,
+      };
+      case 'CERRAR_DIA':
+      return {
+        ...state,
+        cierreDiarioRealizado: true,
+        cierresDiarios: [
+          ...state.cierresDiarios,
+          {
+            fecha: action.payload.fecha,
+            ventas: state.ventas,
+            compras: state.compras,
+          },
+        ],
       };
     case "GET_COMPRAS_SUCCESS":
       return {
@@ -43,7 +63,16 @@ const trasaccionReducer = (state = initialState, action) => {
         ...state,
         error: action.payload,
       };
-
+      case 'GUARDAR_VENTAS_FILTRADAS':
+        return {
+          ...state,
+          VentasFiltradas: action.payload,
+        };
+        case 'GUARDAR_COMPRAS_FILTRADAS':
+          return {
+            ...state,
+            ComprasFiltradas: action.payload,
+          };
     default:
       return state;
   }

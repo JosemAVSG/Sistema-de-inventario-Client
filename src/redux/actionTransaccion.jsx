@@ -4,7 +4,14 @@ import {
   createTransaccionRequest,
 } from "../api/transaccion";
 
-
+export const cerrarDia = (fecha, ventas, compras) => ({
+  type: 'CERRAR_DIA',
+  payload: {
+    fecha,
+    ventas,
+    compras,
+  },
+});
 export const getVentasSuccess = (ventas) => ({
     type: "GET_VENTAS_SUCCESS",
     payload: ventas,
@@ -17,7 +24,7 @@ export const getVentasSuccess = (ventas) => ({
     return async (dispatch) => {
       try {
         const res = await getVentas();
-        console.log(res.data);
+       
         dispatch(getVentasSuccess(res.data));
       } catch (error) {
         dispatch(getVentasFailure(error));
@@ -39,15 +46,13 @@ export const getVentasSuccess = (ventas) => ({
     return async (dispatch) => {
       try {
         const res = await getCompras();
-        console.log(res.data);
+       
         dispatch(getComprasSuccess(res.data));
       } catch (error) {
         dispatch(getComprasFailure(error));
       }
     };
   };
-
-
 
   export const createTransaccionSuccess = (proveedor) => ({
     type: "CREATE_TRANSACCION_SUCCESS",
@@ -62,15 +67,14 @@ export const getVentasSuccess = (ventas) => ({
   export const addTransaccion = (tipo) => {
     return async (dispatch) => {
 
-      
       try {
-        
         console.log(tipo);
         const res = await createTransaccionRequest(tipo);
         console.log(res.data);
         dispatch(createTransaccionSuccess(res.data));
       } catch (error) {
         dispatch(createTransaccionFailure(error));
+        console.log(error);
       }
     };
   };

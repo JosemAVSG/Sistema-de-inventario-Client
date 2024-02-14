@@ -18,7 +18,40 @@ body {
   background: #202020;
   color: rgb(207, 203, 203);
 }
+.active{
+  background-color: rgb(185, 35, 35);
+  padding: 10px;
+  border-radius: 10px;
+}
+.chart{
+  height: 600px;
+}
+.ventas {
+  box-sizing: border-box;
+  margin: auto;
+  padding: 5vw;
+  width: 100%;
+  border: 1px solid #ccc;
+}
 
+/* Media query para pantallas más grandes */
+@media screen and (min-width: 768px) {
+  .ventas {
+    max-width: 700px;
+  }
+}
+
+
+
+.tablesell{
+  height: 530px;
+  
+}
+.boton{
+  position: absolute;
+  color: #FFFFFF;
+  cursor: pointer;
+}
 
 
 /* This style will apply to screens smaller than or equal to 600px wide */

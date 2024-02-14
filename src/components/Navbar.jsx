@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../redux/actions";
 import imguser from "../img/user.svg";
@@ -20,14 +20,14 @@ const Navbar = () => {
  
   
   return (
-    <div className="bg-zinc-700 my-3 flex justify-between py-10 mt-0 mb-2 px-10 rounded-lg">
+    <div className="bg-zinc-700  flex justify-between py-5 mt-0 px-10 rounded-sm">
       
-      <NavLink exact="true" to="/home">
-        <h1 className="text-2xl text-white font-bold">
+
+        <h1 className="text-2xl ml-16 text-white font-bold">
          
           Sistema de Inventario
         </h1>
-      </NavLink>
+ 
       
       <div className="flex  gap-x-6">
         {isAuthenticated ? (
@@ -77,20 +77,21 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            <NavLink
+          
+            <Link
               exact="true"
               to="/login"
               className="bg-indigo-700 rounded-lg px-4 py-1"
             >
               Login
-            </NavLink>
-            <NavLink
+            </Link>
+            <Link
               exact="true"
               to="/register"
               className="bg-indigo-700 rounded-lg px-4 py-1"
             >
               Registrarse
-            </NavLink>
+            </Link>
           </>
         )}
       </div>

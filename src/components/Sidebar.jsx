@@ -1,71 +1,232 @@
-
-import { NavLink } from 'react-router-dom';
-import styled from 'styled-components';
+import { Link, NavLink } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBars,
+  faCubes,
+  faDashboard,
+  faHandshake,
+  faMoneyBill1Wave,
+  faTags,
+  faUserTie,
+} from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 const Sidebar = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
+  const cierreDiarioRealizado = useSelector(
+    (state) => state.transacciones.cierreDiarioRealizado
+  );
+  console.log(cierreDiarioRealizado);
   return (
-    <Wrapper>
+    <div className={` flex  overflow-hidden ${isOpen ? "ml-0" : "-ml-55"}`}>
+      <button
+        className={`boton top-1 z-50 p-2 ml-5 ${
+          isOpen
+            ? "bg-gray-600 opacity-40 rounded-full text-white"
+            : " rounded-lg text-white"
+        }`}
+        onClick={toggleSidebar}
+      >
+        {isOpen ? (
+          <FontAwesomeIcon
+            icon={faBars}
+            className="ml-4  text-3xl leading-none rounded-lg py-3  mr-3 shadow-sm"
+          />
+        ) : (
+          <FontAwesomeIcon
+            icon={faBars}
+            className="ml-4 text-3xl leading-none rounded-lg py-3 mr-3 shadow-sm"
+          />
+        )}
+      </button>
 
-    <aside className="w-1/8 flex bg-zinc-700 min-h-screen text-white">
-      <ul className="py-4">
-        <li className="px-4 py-2">
-          <NavLink to="/categoria" >
-            Categoria
-          </NavLink>
-          <NavLink exact='true' to='/categoria/new'  className='bg-indigo-700 block rounded-lg px-4 py-1 w-48 '>
-                 Tarea Nueva
+      <div
+        className={`bg-zinc-700 p-14 transition-all duration-500 ${
+          isOpen ? "ml-0" : "-ml-64"
+        }`}
+      >
+        <ul className="py-4 px-2 mr-10">
+          <li className="flex mb-2 py-2 items-center">
+            <FontAwesomeIcon
+              icon={faDashboard}
+              className="text-3xl leading-none rounded-lg py-3 shadow-sm"
+            />
+            <NavLink
+              to="/home"
+              activeClassname="active"
+              className="font-bold text-2xl"
+            >
+              Dashboard
             </NavLink>
-        </li>
-        <li className="px-4 py-2">
-          <NavLink to="/proveedor" >
-            Proveedor
-          </NavLink>
-          <NavLink exact='true' to='/proveedor/new'  className='bg-indigo-700 block rounded-lg px-4 py-1 w-48'>
-                 Nuevo Proveedor
+          </li>
+
+          <div>
+            <li className=" flex mb-2 py-2 items-center">
+              <FontAwesomeIcon
+                icon={faCubes}
+                className="text-3xl leading-none rounded-lg py-3  mr-3 shadow-sm"
+              />
+              <NavLink to="/categoria" className="font-bold text-2xl">
+                Categoria
+              </NavLink>
+            </li>
+            <NavLink
+              exact="true"
+              to="/categoria/new"
+              className="bg-indigo-700 block rounded-lg text-center mt-5 py-1 w-48"
+            >
+              Tarea Nueva
             </NavLink>
-        </li>
-        <li className="px-4 py-2">
-          <NavLink to="/products" >
-            Producto
-          </NavLink>
-          <NavLink exact='true' to='/products/new'  className='bg-indigo-700 block rounded-lg px-4 py-1 w-48'>
-                 Nuevo Producto
+          </div>
+          <div>
+            <li className="mb-2 py-2 flex items-center">
+              <FontAwesomeIcon
+                icon={faUserTie}
+                className="text-3xl leading-none rounded-lg py-3 mr-3 shadow-sm"
+              />
+              <NavLink to="/proveedor" className="font-bold text-2xl">
+                Proveedor
+              </NavLink>
+            </li>{" "}
+            <NavLink
+              exact="true"
+              to="/proveedor/new"
+              className="bg-indigo-700 block rounded-lg text-center mt-5 py-1 w-48"
+            >
+              Nuevo Proveedor
             </NavLink>
-        </li>
-        <li className="px-4 py-2">
-          <NavLink to="/ventas" >
-            Ventas
-          </NavLink>
-          <NavLink exact='true' to='/ventas/new'  className='bg-indigo-700 block rounded-lg px-4 py-1 w-48'>
-                 nuevo
+          </div>
+          <div>
+            <li className="flex items-center">
+              <FontAwesomeIcon
+                icon={faTags}
+                className=" text-3xl leading-none rounded-lg py-3 mr-3 shadow-sm"
+              />
+              <NavLink to="/products" className="font-bold text-2xl">
+                Producto
+              </NavLink>
+            </li>
+            <NavLink
+              exact="true"
+              to="/products/new"
+              className="bg-indigo-700 block rounded-lg text-center mt-5 py-1 w-48"
+            >
+              Nuevo Producto
             </NavLink>
-        </li>
-        <li className="px-4 py-2">
-          <NavLink to="/compras" >
-            Compras
-          </NavLink>
-          <NavLink exact='true' to='/compras/new'  className='bg-indigo-700 block rounded-lg px-4 py-1 w-48'>
-                 nuevo
-            </NavLink>
-        </li>
-      </ul>
-    </aside>
-     </Wrapper>
+          </div>
+          <div>
+            <li className="mb-2 py-2 flex items-center">
+              <FontAwesomeIcon
+                icon={faMoneyBill1Wave}
+                className=" text-3xl leading-none rounded-lg py-3 px-3 mr-3 shadow-sm"
+              />
+              <NavLink to="/ventas" className="font-bold text-2xl">
+                Ventas
+              </NavLink>
+            </li>
+            {cierreDiarioRealizado ? (
+              <NavLink
+                to="/ventas/new"
+                onClick={(e) =>
+                  cierreDiarioRealizado ? e.preventDefault() : null
+                }
+                className={`bg-indigo-700 block rounded-lg text-center mt-5 py-1 w-48 ${
+                  cierreDiarioRealizado ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                nuevo
+              </NavLink>
+            ) : (
+              <NavLink
+                to="/ventas/new"
+                className="bg-indigo-700 block rounded-lg text-center mt-5 py-1 w-48"
+              >
+                nuevo
+              </NavLink>
+            )}
+          </div>
+          <div>
+            <li className="mb-2 py-2  flex items-center">
+              <FontAwesomeIcon
+                icon={faHandshake}
+                className="text-3xl leading-none rounded-lg py-3  mr-3 shadow-sm"
+              />
+              <NavLink to="/compras" className="font-bold text-2xl">
+                Compras
+              </NavLink>
+            </li>
+            {cierreDiarioRealizado ? (
+              <NavLink
+                to="/compras/new"
+                onClick={(e) =>
+                  cierreDiarioRealizado ? e.preventDefault() : null
+                }
+                className={`bg-indigo-700 block rounded-lg text-center mt-5 py-1 w-48 ${
+                  cierreDiarioRealizado ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                nuevo
+              </NavLink>
+            ) : (
+              <NavLink
+                exact="true"
+                to="/compras/new"
+                className="bg-indigo-700 block rounded-lg text-center mt-5 py-1 w-48"
+              >
+                nuevo
+              </NavLink>
+            )}
+          </div>
+        </ul>
+      </div>
+      <div
+        className={`absolute pl-10  justify-evenly sm:top-20 sm:mt-6  md:top-10 left-0 w-10 h-screen flex flex-col  text-white ${
+          isOpen ? "hidden" : ""
+        }`}
+      >
+        <Link to="/home">
+          <FontAwesomeIcon
+            icon={faDashboard}
+            className="text-3xl hover:text-red-400 activeicon  mb-2"
+          />
+        </Link>
+
+        <Link to={"/categoria"}>
+          <FontAwesomeIcon
+            icon={faCubes}
+            className="text-3xl    hover:text-red-400 mb-2"
+          />
+        </Link>
+        <Link to={"/proveedor"}>
+          <FontAwesomeIcon
+            icon={faUserTie}
+            className="text-3xl mb-2  hover:text-red-400"
+          />
+        </Link>
+        <Link to={"/products"}>
+          <FontAwesomeIcon
+            icon={faTags}
+            className="text-3xl mb-2  hover:text-red-400"
+          />
+        </Link>
+        <Link to={"/ventas"}>
+          <FontAwesomeIcon
+            icon={faMoneyBill1Wave}
+            className="text-3xl  hover:text-red-400 mb-2"
+          />
+        </Link>
+        <Link to={"/compras"}>
+          <FontAwesomeIcon
+            icon={faHandshake}
+            className="text-3xl  hover:text-red-400 mb-2"
+          />
+        </Link>
+      </div>
+    </div>
   );
 };
-const Wrapper = styled.nav`
-.sidebar-header {
-  width: 250px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  padding: 0 15px;
-  z-index: 5;
-  background: #fff;
-  background-clip: padding-box;
-  border-bottom: 1px solid #e4e4e4;
-}`;
 
 export default Sidebar;
