@@ -44,7 +44,7 @@ const Sidebar = () => {
       </button>
 
       <div
-        className={`bg-zinc-700 p-14 transition-all duration-500 ${
+        className={`bg-zinc-700 h-screen p-14 transition-all duration-500 ${
           isOpen ? "ml-0" : "-ml-64"
         }`}
       >
