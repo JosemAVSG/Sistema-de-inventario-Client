@@ -16,9 +16,9 @@ const LastSalesTable = () => {
   const lastFiveSales = salesData.slice(-5);
 console.log(lastFiveSales);
   return (
-    <div className="w-full flex justify-center flex-col bg-white text-black rounded-lg">
+    <div className="   bg-white text-black rounded-lg">
       <h2 className=" text-2xl text-black rounded-lg  font-bold mb-4  pl-7 bg-white py-3 ">Últimas Ventas</h2>
-      <table className="w-90 tablesell rounded-lg overflow-hidden shadow-lg mx-1 bg-white">
+      <table className="tablesell rounded-lg  shadow-lg mx-1 bg-white">
         <thead>
           <tr className="bg-cyan-800"> 
      
@@ -31,9 +31,9 @@ console.log(lastFiveSales);
         </thead>
         <tbody>
           {lastFiveSales.map((sale,index) => (
-            <tr key={sale._id} className={index % 2 === 0 ? 'bg-gray-300' : 'bg-gray-100'}>
+            <tr key={sale._id} className={index % 2 === 0 ? 'bg-gray-300' : 'bg-gray-100 '}>
               
-              <td className="text-left py-2 px-4">
+              <td className="text-center  py-2">
               <ul>
                   {sale.productos.map((producto, index) => (
                     <li className="p-2" key={index}>{producto.producto?.nombre}</li>
@@ -45,13 +45,13 @@ console.log(lastFiveSales);
                 
               <ul>
                   {sale.productos.map((producto, index) => (
-                    <li className="p-2" key={index}>{producto.cantidad}</li>
+                    <li className=" text-center" key={index}>{producto.cantidad}</li>
                     
                   ))}
                 </ul>
               
               </td>
-              <td className="text-left py-2 px-4">      
+              <td className="text-center py-2">      
               <ul>
                   {sale.productos.map((producto, index) => (
                     <li className="p-2" key={index}>{formatCurrency(producto.precioUnitario)}</li>

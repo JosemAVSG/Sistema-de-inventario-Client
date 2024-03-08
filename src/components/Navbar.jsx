@@ -6,33 +6,43 @@ import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
-
+import { cerrarDia } from "../redux/actionTransaccion";
 const Navbar = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const user = useSelector((state) => state.auth.user);
-
+  const ventas = useSelector((state) => state.transacciones.ventas);
+  const compras = useSelector((state) => state.transacciones.compras);
   const dispatch = useDispatch();
 
   const logout = () => {
     dispatch(logoutUser());
   };
   const [isOpen, setIsOpen] = useState(false);
- 
-  
-  return (
-    <div className="bg-zinc-700  flex justify-between py-5 mt-0 px-10 rounded-sm">
-      
 
-        <h1 className="text-2xl ml-16 text-white font-bold">
-         
-          Sistema de Inventario
-        </h1>
- 
-      
+  const handleCerrarDia = () => {
+    // Obtén las ventas y compras del día, o de la forma que necesites
+    const fechaActual = new Date().toISOString();
+
+  // Filtra las ventas del día
+  const ventasDelDia = ventas.filter((venta) => venta.createdAt.includes(fechaActual));
+
+  // Filtra las compras del día
+  const comprasDelDia = compras.filter((compra) => compra.createdAt.includes(fechaActual));
+    // Dispatch de la acción de cierre diario
+    dispatch(cerrarDia(fechaActual, ventasDelDia, comprasDelDia));
+  };
+
+  return (
+    <div className="bg-zinc-900 flex justify-between py-3 mt-0 px-10 rounded-sm">
+      <h1 className="text-2xl ml-16 text-white font-bold">
+        Sistema de Inventario
+      </h1>
+
       <div className="flex  gap-x-6">
         {isAuthenticated ? (
           <>
             <div className="dropdown relative md:static ">
+            <button onClick={handleCerrarDia}>Cerrar Día</button>
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="menu-btn focus:outline-none focus:shadow-outline flex flex-wrap items-center"
@@ -73,11 +83,9 @@ const Navbar = () => {
                 </NavLink>
               </div>
             </div>
-            
           </>
         ) : (
           <>
-          
             <Link
               exact="true"
               to="/login"

@@ -1,0 +1,12 @@
+.side ul{
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+
+li:hover{
+    border-radius: 5px ;
+    background: rgb(255, 255, 255);
+    color: rgb(1, 1, 22);
+   
+}

@@ -8,9 +8,11 @@ import {
   faMoneyBill1Wave,
   faTags,
   faUserTie,
+  faX,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import "./Sidebar.scss";
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleSidebar = () => {
@@ -24,53 +26,52 @@ const Sidebar = () => {
     <div className={` flex  overflow-hidden ${isOpen ? "ml-0" : "-ml-55"}`}>
       <button
         className={`boton top-1 z-50 p-2 ml-5 ${
-          isOpen
-            ? "bg-gray-600 opacity-40 rounded-full text-white"
-            : " rounded-lg text-white"
+          isOpen ? " text-white" : " rounded-lg text-white"
         }`}
         onClick={toggleSidebar}
       >
         {isOpen ? (
           <FontAwesomeIcon
-            icon={faBars}
-            className="ml-4  text-3xl leading-none rounded-lg py-3  mr-3 shadow-sm"
+            icon={faX}
+            className="ml-4  text-2xl leading-none rounded-lg py-3  mr-3 shadow-sm"
           />
         ) : (
           <FontAwesomeIcon
             icon={faBars}
-            className="ml-4 text-3xl leading-none rounded-lg py-3 mr-3 shadow-sm"
+            className="ml-4 text-2xl leading-none rounded-lg py-3 mr-3 shadow-sm"
           />
         )}
       </button>
 
       <div
-        className={`bg-zinc-700 h-screen p-14 transition-all duration-500 ${
+        className={`bg-zinc-900 h-screen side p-8 transition-all duration-500 ${
           isOpen ? "ml-0" : "-ml-64"
         }`}
       >
-        <ul className="py-4 px-2 mr-10">
-          <li className="flex mb-2 py-2 items-center">
-            <FontAwesomeIcon
-              icon={faDashboard}
-              className="text-3xl leading-none rounded-lg py-3 shadow-sm"
-            />
-            <NavLink
-              to="/home"
-              activeClassname="active"
-              className="font-bold text-2xl"
-            >
-              Dashboard
-            </NavLink>
-          </li>
-
+        <ul className={`py-2 mr-10 ${isOpen? "":"mr-24"}`}>
           <div>
-            <li className=" flex mb-2 py-2 items-center">
+            <li className="flex  items-center">
+              <FontAwesomeIcon
+                icon={faDashboard}
+                className=" text-2xl leading-none rounded-lg py-2 mr-3 shadow-sm"
+              />
+              <NavLink
+                to="/home"
+                activeClassname="active"
+                className="font-bold text-xl"
+              >
+                Dashboard
+              </NavLink>
+            </li>
+          </div>
+          <div>
+            <li className=" flex  items-center">
               <FontAwesomeIcon
                 icon={faCubes}
-                className="text-3xl leading-none rounded-lg py-3  mr-3 shadow-sm"
+                className=" text-2xl leading-none rounded-lg py-2 mr-3 shadow-sm"
               />
-              <NavLink to="/categoria" className="font-bold text-2xl">
-                Categoria
+              <NavLink to="/categoria" className="font-bold text-xl">
+                Categorias
               </NavLink>
             </li>
             <NavLink
@@ -82,13 +83,13 @@ const Sidebar = () => {
             </NavLink>
           </div>
           <div>
-            <li className="mb-2 py-2 flex items-center">
+            <li className=" flex items-center">
               <FontAwesomeIcon
                 icon={faUserTie}
-                className="text-3xl leading-none rounded-lg py-3 mr-3 shadow-sm"
+                className=" text-2xl leading-none rounded-lg py-2 mr-3 shadow-sm"
               />
-              <NavLink to="/proveedor" className="font-bold text-2xl">
-                Proveedor
+              <NavLink to="/proveedor" className="font-bold text-xl">
+                Proveedores
               </NavLink>
             </li>{" "}
             <NavLink
@@ -103,10 +104,10 @@ const Sidebar = () => {
             <li className="flex items-center">
               <FontAwesomeIcon
                 icon={faTags}
-                className=" text-3xl leading-none rounded-lg py-3 mr-3 shadow-sm"
+                className=" text-2xl leading-none rounded-lg py-2 mr-3 shadow-sm"
               />
-              <NavLink to="/products" className="font-bold text-2xl">
-                Producto
+              <NavLink to="/products" className="font-bold text-xl">
+                Productos
               </NavLink>
             </li>
             <NavLink
@@ -118,12 +119,12 @@ const Sidebar = () => {
             </NavLink>
           </div>
           <div>
-            <li className="mb-2 py-2 flex items-center">
+            <li className="flex items-center">
               <FontAwesomeIcon
                 icon={faMoneyBill1Wave}
-                className=" text-3xl leading-none rounded-lg py-3 px-3 mr-3 shadow-sm"
+                className=" text-2xl leading-none rounded-lg py-2 mr-3 shadow-sm"
               />
-              <NavLink to="/ventas" className="font-bold text-2xl">
+              <NavLink to="/ventas" className="font-bold text-xl">
                 Ventas
               </NavLink>
             </li>
@@ -149,12 +150,12 @@ const Sidebar = () => {
             )}
           </div>
           <div>
-            <li className="mb-2 py-2  flex items-center">
+            <li className=" flex items-center">
               <FontAwesomeIcon
                 icon={faHandshake}
-                className="text-3xl leading-none rounded-lg py-3  mr-3 shadow-sm"
+                className=" text-2xl leading-none rounded-lg py-2 mr-3 shadow-sm"
               />
-              <NavLink to="/compras" className="font-bold text-2xl">
+              <NavLink to="/compras" className="font-bold text-xl">
                 Compras
               </NavLink>
             </li>
@@ -183,14 +184,14 @@ const Sidebar = () => {
         </ul>
       </div>
       <div
-        className={`absolute pl-10  justify-evenly sm:top-20 sm:mt-6  md:top-10 left-0 w-10 h-screen flex flex-col  text-white ${
+        className={`flex flex-col absolute justify-evenly pl-8 sm:top-20 sm:mt-6 md:top-10 w-10 min-h-screen text-white ${
           isOpen ? "hidden" : ""
         }`}
       >
         <Link to="/home">
           <FontAwesomeIcon
             icon={faDashboard}
-            className="text-3xl hover:text-red-400 activeicon  mb-2"
+            className="text-3xl hover:text-red-400 activeicon mb-2"
           />
         </Link>
 

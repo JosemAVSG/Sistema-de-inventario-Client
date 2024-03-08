@@ -10,24 +10,9 @@ import { useEffect, useMemo } from "react";
 import { getproducts } from "../redux/actionProducts";
 import { Link } from "react-router-dom";
 import LastSalesTable from "../components/LastSell";
-import { cerrarDia } from "../redux/actionTransaccion";
 const HomePage = () => {
   const startDate = "2023-12-01";
-  const endDate = "2023-12-31";
-
-  const handleCerrarDia = () => {
-    // Obtén las ventas y compras del día, o de la forma que necesites
-    const fechaActual = new Date().toISOString();
-
-  // Filtra las ventas del día
-  const ventasDelDia = ventas.filter((venta) => venta.createdAt.includes(fechaActual));
-
-  // Filtra las compras del día
-  const comprasDelDia = compras.filter((compra) => compra.createdAt.includes(fechaActual));
-    // Dispatch de la acción de cierre diario
-    dispatch(cerrarDia(fechaActual, ventasDelDia, comprasDelDia));
-  };
-
+  const endDate = "2023-12-31"
 
   const ventas = useSelector((state) => state.transacciones.ventas);
   const compras = useSelector((state) => state.transacciones.compras);
@@ -90,11 +75,11 @@ const HomePage = () => {
     (total, compra) => total + compra.precioUnitario,
     0
   );
-
+// grid grid-cols-[repeat(auto-fill,minmax(350px,1fr))]
   return (
-    <div className="p-6 grid-flow-row lg:h-screen md:h-screen  w-full">
-       <button onClick={handleCerrarDia}>Cerrar Día</button>
-      <div className="grid  mb-2 sm:grid-cols-1 xl:grid-cols-4 gap-4 rounded shadow-sm">
+    <div className="p-6 grid-flow-row min-[320px]:grid-cols-1 max-[600px]:grid-cols-2   w-full">
+    
+      <div className="grid  mb-2 sm:grid-cols-2  min-[320px]:grid-cols-1 max-[600px]:grid-cols-2 xl:grid-cols-4 gap-4 rounded shadow-sm">
         <div className="px-4 py-6 shadow-lg hover:scale-105  transition ease-in-out duration-500 bg-cyan-800">
           <div className="flex items-center">
             <p>Total de Ingresos</p>
@@ -181,11 +166,11 @@ const HomePage = () => {
           </a>
         </div>
       </div>
-      <div className="mt-5 lg:flex sm:grid-cols-1 rounded">
-        <div className=" flex-grow md:col-span-2 sm:mb-5">
+      <div className="mt-5 lg:flex sm:grid-cols-1  min-[320px]:grid-cols-1 max-[300px]:grid-cols-2  rounded">
+        <div className=" flex-grow  sm:mb-5">
           <ChartComponent></ChartComponent>
         </div>
-        <div className="lg:ml-4 md:col-span-1">
+        <div className="lg:ml-4  sm:col-span-1  md:max-w-[500px]">
           <LastSalesTable></LastSalesTable>
         </div>
       </div>
