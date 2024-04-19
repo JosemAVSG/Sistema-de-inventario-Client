@@ -23,7 +23,7 @@ body {
   border-radius: 10px;
 }
 .chart{
-  height: 600px;
+  height: 350px;
 }
 .ventas {
   box-sizing: border-box;
@@ -41,7 +41,10 @@ body {
 }
 
 .tablesell{
-  height: 530px;
+  font-size: 14px;
+  font-weight: bold;
+  height: 200px;
+
   
 }
 .boton{
@@ -60,15 +63,44 @@ body {
 }
 
 /* This style will apply to screens between 601px and 900px wide */
-@media only screen and (min-width: 601px) and (max-width: 900px) {
+@media only screen and (min-width: 601px) and (max-width: 1440px) {
   body {
-    font-size: 16px;
+    font-size: 14px;
   }
+  .chart{
+    height: 350px;
+  }
+  
+.tablesell{
+  font-size: 14px;
+  font-weight: bold;
+  height: 200px; 
+}
+.chart{
+  height: 350px;
+}
 }
 
-/* This style will apply to screens larger than 900px wide */
-@media only screen and (min-width: 901px) {
-  body {
-    font-size: 18px;
+
+@media only screen and  (min-width: 1450px) {
+  
+  .tablesell{
+    font-size: 16px;
+    font-weight: bold;
+    height: 550px;
   }
+  .chart{
+    height: 600px;
+  }
+  
+  .graphic {
+    width: 100%;
+    height: 100%;
+    display: flex;
+  
+  }
+  .mychart{
+    display: flex;
+  }
+  
 }

@@ -32,7 +32,6 @@ const fuzzyFilter = (row, columnId, value, addMeta) => {
 const DebouncedInput = ({ value: keyWord, onChange, ...props }) => {
   const [value, setValue] = useState(keyWord);
 
-
   useEffect(() => {
     const timeout = setTimeout(() => {
       onChange(value);
@@ -74,8 +73,6 @@ const DataTableSell = (datas) => {
       currency: "COP", // Cambia 'COL' por el código de la moneda que necesitas
     }).format(value);
   };
-
- 
 
   const columns = [
     {
@@ -161,7 +158,7 @@ const DataTableSell = (datas) => {
           minute: "numeric",
           second: "numeric",
           hour12: true, // Indica que quieres formato de 12 horas
-          timeZone:'UTC'
+          timeZone: "UTC",
         };
 
         const fechaFormateada = fecha.toLocaleDateString(
@@ -205,43 +202,36 @@ const DataTableSell = (datas) => {
     setEndDate(date);
   };
 
+  // ...
 
-// ...
+  const applyDateFilter = () => {
+    // Verifica si ambas fechas están definidas antes de aplicar el filtro
+    if (startDate && endDate) {
+      // Lógica para aplicar el filtro de fechas
+      const filteredData = datas.data.filter((row) => {
+        // Formatea startDate en formato ISO
+        const formattedStartDate = new Date(startDate)
+          .toISOString()
+          .split("T")[0];
+        // Formatea endDate en formato ISO
+        const formattedEndDate = new Date(endDate).toISOString().split("T")[0];
+        // Obtén solo la parte de la fecha (sin la hora) de la fila
+        const rowDate = row.createdAt.split("T")[0];
 
-const applyDateFilter = () => {
-  // Verifica si ambas fechas están definidas antes de aplicar el filtro
-  if (startDate && endDate) {
-    // Lógica para aplicar el filtro de fechas
-    const filteredData = datas.data.filter((row) => {
-      // Formatea startDate en formato ISO
-      const formattedStartDate = new Date(startDate).toISOString().split('T')[0];
-      // Formatea endDate en formato ISO
-      const formattedEndDate = new Date(endDate).toISOString().split('T')[0];
-      // Obtén solo la parte de la fecha (sin la hora) de la fila
-      const rowDate = row.createdAt.split('T')[0];
-     
-      // Compara las partes de la fecha sin la hora
-      return rowDate >= formattedStartDate && rowDate <= formattedEndDate;
-    });
+        // Compara las partes de la fecha sin la hora
+        return rowDate >= formattedStartDate && rowDate <= formattedEndDate;
+      });
 
-    // Actualiza el estado con los datos filtrados
-    setFilteredData(filteredData);
-   
-  } else {
-    // Si alguna de las fechas no está definida, muestra todos los datos
-    setFilteredData(datas.data);
-  }
-};
-
-// ...
-
-
-
-  console.log(filteredData);
-
+      // Actualiza el estado con los datos filtrados
+      setFilteredData(filteredData);
+    } else {
+      // Si alguna de las fechas no está definida, muestra todos los datos
+      setFilteredData(datas.data);
+    }
+  };
 
   const table = useReactTable({
-    data: filteredData !=null ? filteredData : datas.data,
+    data: filteredData != null ? filteredData : datas.data,
     columns,
     state: {
       globalFilter,
@@ -264,7 +254,7 @@ const applyDateFilter = () => {
     <div className="px-6 py-6 w-full h-screen">
       <header className="bg-gray-900 shadow">
         <div className="mx-auto py-6 px-4">
-          <h1 className="text-white font-bold text-3xl">Ventas</h1>
+          <h1 className="text-white font-bold text-3xl">{datas.data[0].tipo}</h1>
         </div>
       </header>
       <div className="my-2 flex justify-end">

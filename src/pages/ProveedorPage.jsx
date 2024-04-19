@@ -6,13 +6,15 @@ import ProveedorCard from "../components/ProveedorCard";
 const ProveedorPage = () => {
   const proveedors = useSelector((state) => state.proveedor.proveedors);
   const dispatch = useDispatch();
-  console.log(proveedors);
+
   useEffect(() => {
     dispatch(getProveedors());
   }, []);
 
   return (
     <>
+    <div className="flex w-full">
+
       {proveedors.length === 0 && (
         <div>
           <h1 className="font-bold text-xl">
@@ -28,6 +30,7 @@ const ProveedorPage = () => {
           ></ProveedorCard>
         ))}
       </div>
+    </div>
     </>
   );
 };

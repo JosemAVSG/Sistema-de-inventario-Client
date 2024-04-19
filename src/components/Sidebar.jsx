@@ -23,7 +23,7 @@ const Sidebar = () => {
   );
   console.log(cierreDiarioRealizado);
   return (
-    <div className={` flex  overflow-hidden ${isOpen ? "ml-0" : "-ml-55"}`}>
+    <div className={` flex 2xl:h-screen xl:h-screen overflow-hidden ${isOpen ? "ml-0" : "-ml-55"}`}>
       <button
         className={`boton top-1 z-50 p-2 ml-5 ${
           isOpen ? " text-white" : " rounded-lg text-white"
@@ -33,19 +33,19 @@ const Sidebar = () => {
         {isOpen ? (
           <FontAwesomeIcon
             icon={faX}
-            className="ml-4  text-2xl leading-none rounded-lg py-3  mr-3 shadow-sm"
+            className="-ml-2  text-xl leading-none rounded-lg py-3 shadow-sm"
           />
         ) : (
           <FontAwesomeIcon
             icon={faBars}
-            className="ml-4 text-2xl leading-none rounded-lg py-3 mr-3 shadow-sm"
+            className=" -ml-2 text-xl leading-none rounded-lg py-3 shadow-sm"
           />
         )}
       </button>
 
       <div
-        className={`bg-zinc-900 h-screen side p-8 transition-all duration-500 ${
-          isOpen ? "ml-0" : "-ml-64"
+        className={`bg-zinc-900  side p-8 transition-all duration-500 ${
+          isOpen ? "ml-0" : "-ml-72"
         }`}
       >
         <ul className={`py-2 mr-10 ${isOpen? "":"mr-24"}`}>
@@ -53,12 +53,12 @@ const Sidebar = () => {
             <li className="flex  items-center">
               <FontAwesomeIcon
                 icon={faDashboard}
-                className=" text-2xl leading-none rounded-lg py-2 mr-3 shadow-sm"
+                className=" text-lg leading-none rounded-lg py-2 mr-3 shadow-sm"
               />
               <NavLink
                 to="/home"
                 activeClassname="active"
-                className="font-bold text-xl"
+                className="font-bold text-lg"
               >
                 Dashboard
               </NavLink>
@@ -68,9 +68,9 @@ const Sidebar = () => {
             <li className=" flex  items-center">
               <FontAwesomeIcon
                 icon={faCubes}
-                className=" text-2xl leading-none rounded-lg py-2 mr-3 shadow-sm"
+                className=" text-lg leading-none rounded-lg py-2 mr-3 shadow-sm"
               />
-              <NavLink to="/categoria" className="font-bold text-xl">
+              <NavLink to="/categoria" className="font-bold text-lg">
                 Categorias
               </NavLink>
             </li>
@@ -86,9 +86,9 @@ const Sidebar = () => {
             <li className=" flex items-center">
               <FontAwesomeIcon
                 icon={faUserTie}
-                className=" text-2xl leading-none rounded-lg py-2 mr-3 shadow-sm"
+                className=" text-lg leading-none rounded-lg py-2 mr-3 shadow-sm"
               />
-              <NavLink to="/proveedor" className="font-bold text-xl">
+              <NavLink to="/proveedor" className="font-bold text-lg">
                 Proveedores
               </NavLink>
             </li>{" "}
@@ -104,9 +104,9 @@ const Sidebar = () => {
             <li className="flex items-center">
               <FontAwesomeIcon
                 icon={faTags}
-                className=" text-2xl leading-none rounded-lg py-2 mr-3 shadow-sm"
+                className=" text-lg leading-none rounded-lg py-2 mr-3 shadow-sm"
               />
-              <NavLink to="/products" className="font-bold text-xl">
+              <NavLink to="/products" className="font-bold text-lg">
                 Productos
               </NavLink>
             </li>
@@ -122,9 +122,9 @@ const Sidebar = () => {
             <li className="flex items-center">
               <FontAwesomeIcon
                 icon={faMoneyBill1Wave}
-                className=" text-2xl leading-none rounded-lg py-2 mr-3 shadow-sm"
+                className=" text-lg leading-none rounded-lg py-2 mr-3 shadow-sm"
               />
-              <NavLink to="/ventas" className="font-bold text-xl">
+              <NavLink to="/ventas" className="font-bold text-lg">
                 Ventas
               </NavLink>
             </li>
@@ -153,9 +153,9 @@ const Sidebar = () => {
             <li className=" flex items-center">
               <FontAwesomeIcon
                 icon={faHandshake}
-                className=" text-2xl leading-none rounded-lg py-2 mr-3 shadow-sm"
+                className=" text-lg leading-none rounded-lg py-2 mr-3 shadow-sm"
               />
-              <NavLink to="/compras" className="font-bold text-xl">
+              <NavLink to="/compras" className="font-bold text-lg">
                 Compras
               </NavLink>
             </li>
@@ -184,45 +184,45 @@ const Sidebar = () => {
         </ul>
       </div>
       <div
-        className={`flex flex-col absolute justify-evenly pl-8 sm:top-20 sm:mt-6 md:top-10 w-10 min-h-screen text-white ${
+        className={`flex flex-col absolute justify-evenly pl-4 sm:top-20 sm:mt-6 md:top-10 w-10 min-h-screen text-white ${
           isOpen ? "hidden" : ""
         }`}
       >
         <Link to="/home">
           <FontAwesomeIcon
             icon={faDashboard}
-            className="text-3xl hover:text-red-400 activeicon mb-2"
+            className="text-xl hover:text-red-400 activeicon mb-2"
           />
         </Link>
 
         <Link to={"/categoria"}>
           <FontAwesomeIcon
             icon={faCubes}
-            className="text-3xl    hover:text-red-400 mb-2"
+            className="text-xl    hover:text-red-400 mb-2"
           />
         </Link>
         <Link to={"/proveedor"}>
           <FontAwesomeIcon
             icon={faUserTie}
-            className="text-3xl mb-2  hover:text-red-400"
+            className="text-xl mb-2  hover:text-red-400"
           />
         </Link>
         <Link to={"/products"}>
           <FontAwesomeIcon
             icon={faTags}
-            className="text-3xl mb-2  hover:text-red-400"
+            className="text-xl mb-2  hover:text-red-400"
           />
         </Link>
         <Link to={"/ventas"}>
           <FontAwesomeIcon
             icon={faMoneyBill1Wave}
-            className="text-3xl  hover:text-red-400 mb-2"
+            className="text-xl  hover:text-red-400 mb-2"
           />
         </Link>
         <Link to={"/compras"}>
           <FontAwesomeIcon
             icon={faHandshake}
-            className="text-3xl  hover:text-red-400 mb-2"
+            className="text-xl  hover:text-red-400 mb-2"
           />
         </Link>
       </div>

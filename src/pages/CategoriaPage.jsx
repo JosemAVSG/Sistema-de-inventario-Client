@@ -8,13 +8,14 @@ const CategoriaPage = () => {
  // Asegúrate de utilizar las funciones y el estado adecuados del contexto de categorías
         const categories = useSelector(state => state.category.categories);
         const dispatch = useDispatch();
-        console.log(categories);
+  
   useEffect(() => {
     dispatch(getCategories());
   }, []);
 
   return (
     <>
+    <div className="flex w-full"  >
       {categories.length === 0 && (
         <div>
           <h1 className="font-bold text-xl">
@@ -28,6 +29,8 @@ const CategoriaPage = () => {
           </CategoriesCard>
         ))}
       </div>
+
+    </div>
     </>
   )
 };

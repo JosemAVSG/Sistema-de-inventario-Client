@@ -38,7 +38,7 @@ const ChartComponent = () => {
   const febrero = ventasFiltradas?.February?.length || 0;
   const marzo = ventasFiltradas?.March?.length || 0;
   const abril = ventasFiltradas?.April?.length || 0;
-  console.log(enero);
+
   const diciembreC = comprasFiltradas?.December?.length || 0;
 
   const handleClick = (interval) => {
@@ -169,12 +169,12 @@ const ChartComponent = () => {
 
   return (
     <div className="bg-white flex flex-col shadow-lg chart rounded-lg">
-      <div className="ml-5 p-5">
+      <div className="ml-5 ">
       <button className=" rounded-l-lg shadow-sm  py-2 font-semibold text-black px-5 border border-slate-500 hover:bg-slate-500 hover:text-white bg-slate-100 mt-2"  onClick={() => handleClick('dia')}>Día</button>
       <button  className=" shadow-sm text-black py-2 font-semibold px-5 border border-slate-500  hover:bg-slate-600 hover:text-white bg-slate-100 mt-2"  onClick={() => handleClick('semana')} >Semana</button>
       <button className=" rounded-r-lg shadow-sm  py-2 font-semibold border border-slate-500 text-black px-5 hover:text-white hover:bg-slate-500 bg-slate-100 mt-2"   onClick={() => handleClick('mes')}>Mes</button>
       </div>
-      <div  className="flex justify-center items-center" style={{ height: '500px', position: 'relative' }} >
+      <div  className="flex justify-center  items-center graphic" style={{ height: '300px', position: 'relative' }} >
         <canvas ref={chartRef}      style={{
         position: 'absolute',
         maxWidth: '100%',

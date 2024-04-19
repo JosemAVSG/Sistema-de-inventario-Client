@@ -6,7 +6,7 @@ import DataTableSell from "../components/DataTableSell";
 const VentasPage = () => {
   const ventas = useSelector((state) => state.transacciones.ventas);
   const dispatch = useDispatch();
-  console.log(ventas);
+
   useEffect(() => {
     dispatch(getsells());
   }, [dispatch]);

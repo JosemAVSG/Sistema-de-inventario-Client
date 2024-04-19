@@ -2,7 +2,8 @@ import { Link } from "react-router-dom";
 
 const Welcome= () => {
     return (
-      <div className="flex justify-center align-middle ">
+      <>
+     <div className="flex justify-center align-middle ">
         <main className="grid min-h-screen place-items-center w-full  justify-center bg-gray px-6 py-24 sm:py-32 lg:px-8">
       <div className="text-center">
         <p className=" font-semibold text-indigo-600 text-5xl">Bienvenido</p>
@@ -19,6 +20,8 @@ const Welcome= () => {
       </div>
     </main>
       </div>
+      </>
+      
       
     );
   };

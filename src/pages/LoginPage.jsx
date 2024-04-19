@@ -1,8 +1,8 @@
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { signinUser,signinFailure } from "../redux/actions";
-import {useDispatch,useSelector} from 'react-redux'
+import { signinUser, signinFailure } from "../redux/actions";
+import { useDispatch, useSelector } from "react-redux";
 const LoginPage = () => {
   const {
     register,
@@ -13,11 +13,11 @@ const LoginPage = () => {
   const dispatch = useDispatch();
   const navigation = useNavigate();
 
-  const isAuthenticated = useSelector((state)=> state.auth.isAuthenticated);
-  const loginError= useSelector((state) => state.auth.errors);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const loginError = useSelector((state) => state.auth.errors);
 
   const submiting = handleSubmit((data) => {
-     dispatch(signinUser(data));
+    dispatch(signinUser(data));
   });
 
   const handleRegister = () => {
@@ -25,15 +25,13 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
-      if (loginError.length > 0){
-        setTimeout(() => {
-          dispatch(signinFailure([]));
-     }, 8000);
-      }
+    if (loginError.length > 0) {
+      setTimeout(() => {
+        dispatch(signinFailure([]));
+      }, 8000);
+    }
   }, [loginError]);
- 
- 
-  
+
   useEffect(() => {
     if (isAuthenticated) navigation("/home");
   }, [isAuthenticated]);
@@ -67,12 +65,17 @@ const LoginPage = () => {
             <p className="text-red-500">Username is required</p>
           )}
           <div className="flex justify-between py-5">
-            <button type="submit" className='bg-purple-500 rounded-lg px-4 py-1' >Login</button>
-          <button type="button"className='bg-indigo-700 rounded-lg px-4 py-1'  onClick={handleRegister}>
-            Register here
-          </button>
+            <button type="submit" className="bg-cyan-600 rounded-lg px-4 py-1">
+              Login
+            </button>
+            <button
+              type="button"
+              className="bg-cyan-600 rounded-lg px-4 py-1"
+              onClick={handleRegister}
+            >
+              Register here
+            </button>
           </div>
-          
         </form>
       </div>
     </div>

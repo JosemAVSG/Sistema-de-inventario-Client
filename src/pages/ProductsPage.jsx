@@ -11,7 +11,7 @@ const ProductsPage = () => {
     dispatch(getproducts());
   }, []);
 
-  console.log(products);
+ 
   return (
     <>
       {products.length === 0 && (

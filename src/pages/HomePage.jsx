@@ -64,21 +64,16 @@ const HomePage = () => {
 
     return total + precioDefinido;
   }, 0);
-  console.log(sumaTotalCostos);
   const margenGanancia = sumaPrecios - sumaTotalCostos;
 
-  console.log(
-    `el ingreso es de   ${sumaPrecios} - ${sumaTotalCostos} da un beneficio de ${margenGanancia}`
-  );
+  
 
   const gastos = buyWithinRange.reduce(
     (total, compra) => total + compra.precioUnitario,
     0
   );
-// grid grid-cols-[repeat(auto-fill,minmax(350px,1fr))]
   return (
     <div className="p-6 grid-flow-row min-[320px]:grid-cols-1 max-[600px]:grid-cols-2   w-full">
-    
       <div className="grid  mb-2 sm:grid-cols-2  min-[320px]:grid-cols-1 max-[600px]:grid-cols-2 xl:grid-cols-4 gap-4 rounded shadow-sm">
         <div className="px-4 py-6 shadow-lg hover:scale-105  transition ease-in-out duration-500 bg-cyan-800">
           <div className="flex items-center">

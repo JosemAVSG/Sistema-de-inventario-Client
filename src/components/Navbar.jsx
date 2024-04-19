@@ -23,18 +23,22 @@ const Navbar = () => {
     // Obtén las ventas y compras del día, o de la forma que necesites
     const fechaActual = new Date().toISOString();
 
-  // Filtra las ventas del día
-  const ventasDelDia = ventas.filter((venta) => venta.createdAt.includes(fechaActual));
+    // Filtra las ventas del día
+    const ventasDelDia = ventas.filter((venta) =>
+      venta.createdAt.includes(fechaActual)
+    );
 
-  // Filtra las compras del día
-  const comprasDelDia = compras.filter((compra) => compra.createdAt.includes(fechaActual));
+    // Filtra las compras del día
+    const comprasDelDia = compras.filter((compra) =>
+      compra.createdAt.includes(fechaActual)
+    );
     // Dispatch de la acción de cierre diario
     dispatch(cerrarDia(fechaActual, ventasDelDia, comprasDelDia));
   };
 
   return (
     <div className="bg-zinc-900 flex justify-between py-3 mt-0 px-10 rounded-sm">
-      <h1 className="text-2xl ml-16 text-white font-bold">
+      <h1 className="text-xl ml-16 self-center text-white font-bold">
         Sistema de Inventario
       </h1>
 
@@ -42,7 +46,6 @@ const Navbar = () => {
         {isAuthenticated ? (
           <>
             <div className="dropdown relative md:static ">
-            <button onClick={handleCerrarDia}>Cerrar Día</button>
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="menu-btn focus:outline-none focus:shadow-outline flex flex-wrap items-center"
@@ -51,7 +54,7 @@ const Navbar = () => {
                   <img className="w-full h-full object-cover" src={imguser} />
                 </div>
                 <div className="ml-2 capitalize flex ">
-                  <h1 className="text-xl text-white font-semibold m-0 p-0 leading-none">
+                  <h1 className="text-md text-white font-semibold m-0 p-0 leading-none">
                     {user.username}
                   </h1>
                 </div>
@@ -81,6 +84,13 @@ const Navbar = () => {
                 >
                   Logout
                 </NavLink>
+
+                <button
+                  className="px-4 py-2 w-full bg-white rounded-md p-2 text-left hover:bg-red-600 text-black transition-all duration-300 ease-in-out "
+                  onClick={handleCerrarDia}
+                >
+                  Cerrar Día
+                </button>
               </div>
             </div>
           </>
