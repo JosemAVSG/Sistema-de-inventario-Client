@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { removeProveedor } from "../redux/actionProveedor";
+import { removeProveedor } from "@/redux/actionProveedor";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 

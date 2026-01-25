@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { signinUser, signinFailure } from "../redux/actions";
+import { signinUser, signinFailure } from "@/redux/actions";
 import { useDispatch, useSelector } from "react-redux";
 const LoginPage = () => {
   const {

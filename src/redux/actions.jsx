@@ -1,4 +1,4 @@
-import { loginRequest, registerRequest, verifyToken } from "../api/auth";
+import { loginRequest, registerRequest, verifyToken } from "../services/auth";
 import Cookie from "js-cookie";
 
 export const signupUser = (userData) => {

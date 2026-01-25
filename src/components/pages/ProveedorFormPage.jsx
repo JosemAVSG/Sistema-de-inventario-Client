@@ -5,7 +5,7 @@ import {
   addProveedor,
   getProveedor,
   editProveedor,
-} from "../redux/actionProveedor";
+} from "@/redux/actionProveedor";
 import { useEffect } from "react";
 
 const ProveedorFormPage = () => {

@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useParams, useNavigate } from "react-router-dom";
-import { addCategory, editCategory, getCategory} from '../redux/actionCategories'
+import { addCategory, editCategory, getCategory} from '@/redux/actionCategories'
 import { useEffect } from "react";
 
 const CategoriaFormPage = () => {

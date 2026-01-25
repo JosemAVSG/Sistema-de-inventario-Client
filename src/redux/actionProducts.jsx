@@ -1,4 +1,4 @@
-import {getproductRequest,getproductsRequest,updateproductsRequest,deletegetproductsRequest,createproductsRequest} from '../api/products'
+import {getproductRequest,getproductsRequest,updateproductsRequest,deletegetproductsRequest,createproductsRequest} from '../services/products'
 export const getproductSuccess = (product) => ({
     type: "GET_product_SUCCESS",
     payload: product,

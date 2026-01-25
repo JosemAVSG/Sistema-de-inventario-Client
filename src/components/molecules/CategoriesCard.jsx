@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { removeCategory } from "../redux/actionCategories";
+import { removeCategory } from "@/redux/actionCategories";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 export function CategoriesCard({ categories }) {

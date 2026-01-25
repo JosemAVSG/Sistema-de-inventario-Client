@@ -1,4 +1,4 @@
-import ChartComponent from "../components/ChartComponent";
+import ChartComponent from "@/components/organisms/ChartComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowAltCircleRight,
@@ -7,9 +7,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useMemo } from "react";
-import { getproducts } from "../redux/actionProducts";
+import { getproducts } from "@/redux/actionProducts";
 import { Link } from "react-router-dom";
-import LastSalesTable from "../components/LastSell";
+import LastSalesTable from "@/components/organisms/LastSell";
 const HomePage = () => {
   const startDate = "2023-12-01";
   const endDate = "2023-12-31"

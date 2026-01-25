@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { getproducts } from "../redux/actionProducts";
+import { getproducts } from "@/redux/actionProducts";
 import { useDispatch, useSelector } from "react-redux";
-import DataTable from "../components/DataTable";
+import DataTable from "@/components/organisms/DataTable";
 
 const ProductsPage = () => {
   const products = useSelector((state) => state.product.products);

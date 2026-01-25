@@ -1,12 +1,12 @@
 import { Link, NavLink } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { logoutUser } from "../redux/actions";
-import imguser from "../img/user.svg";
+import { logoutUser } from "@/redux/actions";
+import imguser from "@/img/user.svg";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
-import { cerrarDia } from "../redux/actionTransaccion";
+import { cerrarDia } from "@/redux/actionTransaccion";
 const Navbar = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const user = useSelector((state) => state.auth.user);

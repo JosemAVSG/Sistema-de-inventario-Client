@@ -1,6 +1,6 @@
 // categoryActions.js
 
-import {getCategoryRequest,getCategorysRequest,createCategorysRequest,updateCategorysRequest,deletegetCategorysRequest } from "../api/categorias";
+import {getCategoryRequest,getCategorysRequest,createCategorysRequest,updateCategorysRequest,deletegetCategorysRequest } from "../services/categorias";
 
 export const getCategorySuccess = (category) => ({
     type: "GET_CATEGORY_SUCCESS",

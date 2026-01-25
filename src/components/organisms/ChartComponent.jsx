@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
 import { useDispatch, useSelector } from "react-redux";
-import { getsells, getbuys } from "../redux/actionTransaccion";
-import { months } from "../utils/months";
+import { getsells, getbuys } from "@/redux/actionTransaccion";
+import { months } from "@/utils/months";
 import {
   filtrarYGuardarCompras,
   filtrarYGuardarVentas,
-} from "../redux/actionFiltros";
+} from "@/redux/actionFiltros";
 
 const ChartComponent = () => {
   const chartRef = useRef();

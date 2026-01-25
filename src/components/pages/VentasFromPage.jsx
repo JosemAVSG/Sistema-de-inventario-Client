@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { addTransaccion } from "../redux/actionTransaccion";
-import { getproducts } from "../redux/actionProducts";
+import { addTransaccion } from "@/redux/actionTransaccion";
+import { getproducts } from "@/redux/actionProducts";
 import { useEffect, useState,useMemo } from "react";
 
 const VentasFromPage = () => {

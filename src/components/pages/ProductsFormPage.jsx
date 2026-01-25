@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useParams, useNavigate } from "react-router-dom";
-import { editproduct, addproduct, getproduct } from "../redux/actionProducts";
-import { getCategories } from "../redux/actionCategories";
-import { getProveedors } from "../redux/actionProveedor";
+import { editproduct, addproduct, getproduct } from "@/redux/actionProducts";
+import { getCategories } from "@/redux/actionCategories";
+import { getProveedors } from "@/redux/actionProveedor";
 import { useEffect } from "react";
 
 const ProductsFormPage = () => {

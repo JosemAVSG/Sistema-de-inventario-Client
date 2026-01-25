@@ -2,7 +2,7 @@ import {
   getCompras,
   getVentas,
   createTransaccionRequest,
-} from "../api/transaccion";
+} from "../services/transaccion";
 
 export const cerrarDia = (fecha, ventas, compras) => ({
   type: 'CERRAR_DIA',

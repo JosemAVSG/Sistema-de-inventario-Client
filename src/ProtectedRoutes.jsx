@@ -1,8 +1,8 @@
 import { useSelector, useDispatch } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
-import Sidebar from "./components/Sidebar";
+import Sidebar from "@/components/organisms/Sidebar";
 import { useEffect } from "react";
-import { verifyTokenAction } from "./redux/actions";
+import { verifyTokenAction } from "@/redux/actions";
 const ProtectedRoutes = () => {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);

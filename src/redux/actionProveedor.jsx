@@ -6,7 +6,7 @@ import {
   updateProveedorRequest,
   deletegetProveedorRequest,
   createProveedorRequest,
-} from "../api/Proveedor";
+} from "../services/Proveedor";
 
 export const getProveedorSuccess = (Proveedor) => ({
   type: "GET_PROVEEDOR_SUCCESS",

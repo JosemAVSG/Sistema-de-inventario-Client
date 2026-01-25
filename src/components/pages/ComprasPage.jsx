@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getbuys } from "../redux/actionTransaccion";
-import DataTableSell from "../components/DataTableSell";
+import { getbuys } from "@/redux/actionTransaccion";
+import DataTableSell from "@/components/organisms/DataTableSell";
 const ComprasPage = () => {
   const compras = useSelector((state) => state.transacciones.compras);
   const dispatch = useDispatch();

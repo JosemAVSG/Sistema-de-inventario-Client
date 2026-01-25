@@ -1,8 +1,8 @@
 
 import { useEffect } from "react";
-import { getCategories} from '../redux/actionCategories'
+import { getCategories} from '@/redux/actionCategories'
 import { useDispatch, useSelector } from "react-redux";
-import CategoriesCard from "../components/CategoriesCard";
+import CategoriesCard from "@/components/molecules/CategoriesCard";
 const CategoriaPage = () => {
     
  // Asegúrate de utilizar las funciones y el estado adecuados del contexto de categorías

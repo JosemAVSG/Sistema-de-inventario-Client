@@ -19,7 +19,7 @@ import {
   ChevronDoubleRightIcon,
   ChevronRightIcon,
 } from "@heroicons/react/24/solid";
-import DateRangePicker from "./DataRangePicker";
+import DateRangePicker from "@/components/molecules/DataRangePicker";
 const fuzzyFilter = (row, columnId, value, addMeta) => {
   const itemRank = rankItem(row.getValue(columnId), value);
 

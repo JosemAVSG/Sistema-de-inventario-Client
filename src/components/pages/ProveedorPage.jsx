@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { getProveedors } from "../redux/actionProveedor";
+import { getProveedors } from "@/redux/actionProveedor";
 import { useDispatch, useSelector } from "react-redux";
-import ProveedorCard from "../components/ProveedorCard";
+import ProveedorCard from "@/components/molecules/ProveedorCard";
 
 const ProveedorPage = () => {
   const proveedors = useSelector((state) => state.proveedor.proveedors);
