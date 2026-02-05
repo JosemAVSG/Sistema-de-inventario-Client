@@ -168,22 +168,39 @@ const ChartComponent = () => {
   }, [newData]);
 
   return (
-    <div className="bg-white flex flex-col shadow-lg chart rounded-lg">
-      <div className="ml-5 ">
-      <button className=" rounded-l-lg shadow-sm  py-2 font-semibold text-black px-5 border border-slate-500 hover:bg-slate-500 hover:text-white bg-slate-100 mt-2"  onClick={() => handleClick('dia')}>Día</button>
-      <button  className=" shadow-sm text-black py-2 font-semibold px-5 border border-slate-500  hover:bg-slate-600 hover:text-white bg-slate-100 mt-2"  onClick={() => handleClick('semana')} >Semana</button>
-      <button className=" rounded-r-lg shadow-sm  py-2 font-semibold border border-slate-500 text-black px-5 hover:text-white hover:bg-slate-500 bg-slate-100 mt-2"   onClick={() => handleClick('mes')}>Mes</button>
+    <div className="bg-secondary-700 flex flex-col shadow-lg chart rounded-lg p-4">
+      <div className="mb-4 flex gap-2">
+        <button
+          className="px-4 py-2 rounded-l-lg font-semibold text-sm transition-colors bg-secondary-600 text-gray-300 hover:bg-primary-600 hover:text-white"
+          onClick={() => handleClick('dia')}
+        >
+          Día
+        </button>
+        <button
+          className="px-4 py-2 font-semibold text-sm transition-colors bg-secondary-600 text-gray-300 hover:bg-primary-600 hover:text-white"
+          onClick={() => handleClick('semana')}
+        >
+          Semana
+        </button>
+        <button
+          className="px-4 py-2 rounded-r-lg font-semibold text-sm transition-colors bg-secondary-600 text-gray-300 hover:bg-primary-600 hover:text-white"
+          onClick={() => handleClick('mes')}
+        >
+          Mes
+        </button>
       </div>
-      <div  className="flex justify-center  items-center graphic" style={{ height: '300px', position: 'relative' }} >
-        <canvas ref={chartRef}      style={{
-        position: 'absolute',
-        maxWidth: '100%',
-        maxHeight: '100%',
-        heigh:'100%',
-        width:'100%'
-      }} />
+      <div className="flex justify-center items-center graphic" style={{ height: '300px', position: 'relative' }}>
+        <canvas
+          ref={chartRef}
+          style={{
+            position: 'absolute',
+            maxWidth: '100%',
+            maxHeight: '100%',
+            height: '100%',
+            width: '100%'
+          }}
+        />
       </div>
-      
     </div>
     
   );

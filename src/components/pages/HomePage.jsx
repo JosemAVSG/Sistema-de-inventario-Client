@@ -2,24 +2,28 @@ import ChartComponent from "@/components/organisms/ChartComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowAltCircleRight,
-  faDownLong,
-  faUpLong,
+  faArrowTrendUp,
+  faArrowTrendDown,
+  faDollarSign,
+  faBox,
+  faChartLine,
+  faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useMemo } from "react";
 import { getproducts } from "@/redux/actionProducts";
 import { Link } from "react-router-dom";
 import LastSalesTable from "@/components/organisms/LastSell";
+
 const HomePage = () => {
   const startDate = "2023-12-01";
-  const endDate = "2023-12-31"
+  const endDate = "2023-12-31";
 
   const ventas = useSelector((state) => state.transacciones.ventas);
   const compras = useSelector((state) => state.transacciones.compras);
   const salesWithinRange = ventas.filter((ventas) => {
     return ventas.createdAt >= startDate && ventas.createdAt <= endDate;
   });
-  console.log(salesWithinRange);
   const buyWithinRange = compras.filter((compras) => {
     return compras.createdAt >= startDate && compras.createdAt <= endDate;
   });
@@ -44,9 +48,10 @@ const HomePage = () => {
   const formatCurrency = (value) => {
     return new Intl.NumberFormat("es-CO", {
       style: "currency",
-      currency: "COP", // Cambia 'COL' por el código de la moneda que necesitas
+      currency: "COP",
     }).format(value);
   };
+
   const sumaPrecios = ventas.reduce(
     (total, venta) => total + venta.precioTotal,
     0
@@ -61,112 +66,253 @@ const HomePage = () => {
 
   const sumaTotalCostos = costos.flat().reduce((total, precioProducto) => {
     const precioDefinido = precioProducto;
-
     return total + precioDefinido;
   }, 0);
-  const margenGanancia = sumaPrecios - sumaTotalCostos;
-
   
+  const margenGanancia = sumaPrecios - sumaTotalCostos;
 
   const gastos = buyWithinRange.reduce(
     (total, compra) => total + compra.precioUnitario,
     0
   );
+
+  // Stat cards data
+  const stats = [
+    {
+      title: "Total Ingresos",
+      value: formatCurrency(sumaPrecios),
+      change: "+12.5%",
+      changeType: "positive",
+      icon: faDollarSign,
+      color: "from-emerald-500 to-emerald-700",
+      link: "/ventas",
+    },
+    {
+      title: "Valor Inventario",
+      value: formatCurrency(total),
+      change: "+8.2%",
+      changeType: "positive",
+      icon: faBox,
+      color: "from-blue-500 to-blue-700",
+      link: "/products",
+    },
+    {
+      title: "Total Egresos",
+      value: formatCurrency(gastos),
+      change: "-3.1%",
+      changeType: "negative",
+      icon: faChartLine,
+      color: "from-amber-500 to-amber-700",
+      link: "/compras",
+    },
+    {
+      title: "Stock Bajo",
+      value: lowStockProducts.length,
+      change: "Alerta",
+      changeType: "warning",
+      icon: faExclamationTriangle,
+      color: "from-red-500 to-red-700",
+      link: "/products",
+    },
+  ];
+
   return (
-    <div className="p-6 grid-flow-row min-[320px]:grid-cols-1 max-[600px]:grid-cols-2   w-full">
-      <div className="grid  mb-2 sm:grid-cols-2  min-[320px]:grid-cols-1 max-[600px]:grid-cols-2 xl:grid-cols-4 gap-4 rounded shadow-sm">
-        <div className="px-4 py-6 shadow-lg hover:scale-105  transition ease-in-out duration-500 bg-cyan-800">
-          <div className="flex items-center">
-            <p>Total de Ingresos</p>
-            <p className="text-green-500 py-1 ml-2 px-2 flex bg-green-200 rounded-full font-bold">
-              10.20%{" "}
+    <div className="animate-fade-in space-y-6">
+      {/* Page Header */}
+      <div className="page-header">
+        <h1 className="page-title">Dashboard</h1>
+        <p className="page-subtitle">
+          Bienvenido al panel de control de tu sistema de inventario
+        </p>
+      </div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {stats.map((stat, index) => (
+          <div
+            key={index}
+            className="stat-card group cursor-pointer"
+          >
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-sm text-gray-400 mb-1">{stat.title}</p>
+                <p className="text-2xl font-bold text-white group-hover:text-primary-400 transition-colors">
+                  {stat.value}
+                </p>
+                <div className="flex items-center mt-2">
+                  <span
+                    className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                      stat.changeType === "positive"
+                        ? "bg-emerald-500/20 text-emerald-400"
+                        : stat.changeType === "negative"
+                        ? "bg-red-500/20 text-red-400"
+                        : "bg-amber-500/20 text-amber-400"
+                    }`}
+                  >
+                    {stat.changeType === "positive" ? (
+                      <FontAwesomeIcon icon={faArrowTrendUp} className="mr-1" />
+                    ) : stat.changeType === "negative" ? (
+                      <FontAwesomeIcon icon={faArrowTrendDown} className="mr-1" />
+                    ) : null}
+                    {stat.change}
+                  </span>
+                </div>
+              </div>
+              <div
+                className={`p-3 rounded-xl bg-gradient-to-br ${stat.color} shadow-lg`}
+              >
+                <FontAwesomeIcon
+                  icon={stat.icon}
+                  className="text-white text-xl"
+                />
+              </div>
+            </div>
+            <Link
+              to={stat.link}
+              className="flex items-center mt-4 text-sm text-primary-400 hover:text-primary-300 transition-colors"
+            >
+              Ver detalles
               <FontAwesomeIcon
-                icon={faUpLong}
-                className="ml-2 text-xl leading-none rounded-lg shadow-sm"
+                icon={faArrowAltCircleRight}
+                className="ml-2"
               />
-            </p>
-            <p>{margenGanancia}</p>
+            </Link>
           </div>
-          <div className="text-3xl font-bold mb-2">
-            {formatCurrency(sumaPrecios)}
+        ))}
+      </div>
+
+      {/* Charts and Tables */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Chart */}
+        <div className="lg:col-span-2 card p-6 card-hover">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-white">
+              Análisis de Ventas
+            </h2>
+            <select className="bg-secondary-700 border border-secondary-600 text-sm text-gray-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary-500">
+              <option>Últimos 7 días</option>
+              <option>Último mes</option>
+              <option>Últimos 3 meses</option>
+            </select>
           </div>
-          <a href="#" className="text-blue-400">
-            Ver informacion{" "}
-            <FontAwesomeIcon
-              icon={faArrowAltCircleRight}
-              className="ml-2 text-xl leading-none rounded-lg shadow-sm"
-            />{" "}
-          </a>
+          <div className="chart-container">
+            <ChartComponent />
+          </div>
         </div>
-        <div className="px-4 py-6 hover:scale-105  transition ease-in-out duration-500 bg-yellow-800">
-          <div className="flex items-center">
-            <p>Valor Actual de Inventario</p>
-            <p className="text-red-500 py-1 ml-2 px-2 flex bg-red-200 rounded-full font-bold">
-              10.20%{" "}
-              <FontAwesomeIcon
-                icon={faDownLong}
-                className="ml-2 text-xl leading-none rounded-lg shadow-sm"
-              />
-            </p>
+
+        {/* Recent Sales */}
+        <div className="card p-6 card-hover">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-white">
+              Últimas Ventas
+            </h2>
+            <Link
+              to="/ventas"
+              className="text-sm text-primary-400 hover:text-primary-300 transition-colors"
+            >
+              Ver todas
+            </Link>
           </div>
-          <div className="text-3xl font-bold mb-2 ">
-            {formatCurrency(total)}
-          </div>
-          <Link to="/products" className="text-blue-400">
-            Ver informacion{" "}
-            <FontAwesomeIcon
-              icon={faArrowAltCircleRight}
-              className="ml-2 text-xl leading-none rounded-lg shadow-sm"
-            />{" "}
-          </Link>
-        </div>
-        <div className="px-4 py-6 hover:scale-105  transition ease-in-out duration-500 bg-cyan-800">
-          <div className="flex items-center">
-            <p>Total de Egresos</p>
-            <p className="text-green-500 py-1 ml-2 px-2 flex bg-green-200 rounded-full font-bold">
-              10.20%
-            </p>
-          </div>
-          <div className="text-3xl font-bold mb-2">
-            {formatCurrency(gastos)}
-          </div>
-          <a href="#" className="text-blue-400">
-            Ver informacion{" "}
-            <FontAwesomeIcon
-              icon={faArrowAltCircleRight}
-              className="ml-2 text-xl leading-none rounded-lg shadow-sm"
-            />{" "}
-          </a>
-        </div>
-        <div className="px-4 py-6 hover:scale-105  transition ease-in-out duration-500 bg-yellow-800">
-          <div className="flex items-center">
-            <p>Prodctos en baja existencia</p>
-            <p className="text-green-500 py-1 ml-2 px-2 flex bg-green-200 rounded-full font-bold">
-              10.20%{" "}
-              <FontAwesomeIcon
-                icon={faUpLong}
-                className="ml-2 text-xl leading-none rounded-lg shadow-sm"
-              />
-            </p>
-          </div>
-          <div className="text-3xl font-bold mb-2">
-            {lowStockProducts.length}
-          </div>
-          <a href="#" className="text-blue-400">
-            Ver informacion{" "}
-            <FontAwesomeIcon
-              icon={faArrowAltCircleRight}
-              className="ml-2 text-xl leading-none rounded-lg shadow-sm"
-            />
-          </a>
+          <LastSalesTable />
         </div>
       </div>
-      <div className="mt-5 lg:flex sm:grid-cols-1  min-[320px]:grid-cols-1 max-[300px]:grid-cols-2  rounded">
-        <div className=" flex-grow  sm:mb-5">
-          <ChartComponent></ChartComponent>
+
+      {/* Additional Info Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        {/* Ganancia Margin */}
+        <div className="card p-6 card-hover">
+          <h2 className="text-lg font-semibold text-white mb-4">
+            Margen de Ganancia
+          </h2>
+          <div className="flex items-center justify-center py-8">
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-primary-500/20 to-emerald-500/20 border-4 border-primary-500/30">
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-white">
+                    {formatCurrency(margenGanancia)}
+                  </p>
+                  <p className="text-sm text-gray-400">Ganancia Total</p>
+                </div>
+              </div>
+              <div className="mt-4 grid grid-cols-2 gap-4 text-center">
+                <div className="p-3 bg-secondary-700/50 rounded-lg">
+                  <p className="text-sm text-gray-400">Ingresos</p>
+                  <p className="text-lg font-semibold text-emerald-400">
+                    {formatCurrency(sumaPrecios)}
+                  </p>
+                </div>
+                <div className="p-3 bg-secondary-700/50 rounded-lg">
+                  <p className="text-sm text-gray-400">Costos</p>
+                  <p className="text-lg font-semibold text-red-400">
+                    {formatCurrency(sumaTotalCostos)}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="lg:ml-4  sm:col-span-1  md:max-w-[500px]">
-          <LastSalesTable></LastSalesTable>
+
+        {/* Quick Actions */}
+        <div className="card p-6 card-hover">
+          <h2 className="text-lg font-semibold text-white mb-4">
+            Acciones Rápidas
+          </h2>
+          <div className="space-y-3">
+            <Link
+              to="/add-products"
+              className="flex items-center gap-4 p-4 bg-secondary-700/50 rounded-lg hover:bg-secondary-700 transition-colors group"
+            >
+              <div className="p-2 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition-colors">
+                <FontAwesomeIcon icon={faBox} className="text-blue-400" />
+              </div>
+              <div className="flex-1">
+                <p className="font-medium text-white">Nuevo Producto</p>
+                <p className="text-sm text-gray-400">
+                  Agregar producto al inventario
+                </p>
+              </div>
+              <FontAwesomeIcon
+                icon={faArrowAltCircleRight}
+                className="text-gray-400 group-hover:text-white transition-colors"
+              />
+            </Link>
+            <Link
+              to="/add-ventas"
+              className="flex items-center gap-4 p-4 bg-secondary-700/50 rounded-lg hover:bg-secondary-700 transition-colors group"
+            >
+              <div className="p-2 bg-emerald-500/20 rounded-lg group-hover:bg-emerald-500/30 transition-colors">
+                <FontAwesomeIcon icon={faDollarSign} className="text-emerald-400" />
+              </div>
+              <div className="flex-1">
+                <p className="font-medium text-white">Nueva Venta</p>
+                <p className="text-sm text-gray-400">
+                  Registrar nueva venta
+                </p>
+              </div>
+              <FontAwesomeIcon
+                icon={faArrowAltCircleRight}
+                className="text-gray-400 group-hover:text-white transition-colors"
+              />
+            </Link>
+            <Link
+              to="/add-compras"
+              className="flex items-center gap-4 p-4 bg-secondary-700/50 rounded-lg hover:bg-secondary-700 transition-colors group"
+            >
+              <div className="p-2 bg-amber-500/20 rounded-lg group-hover:bg-amber-500/30 transition-colors">
+                <FontAwesomeIcon icon={faBox} className="text-amber-400" />
+              </div>
+              <div className="flex-1">
+                <p className="font-medium text-white">Nueva Compra</p>
+                <p className="text-sm text-gray-400">
+                  Registrar compra a proveedor
+                </p>
+              </div>
+              <FontAwesomeIcon
+                icon={faArrowAltCircleRight}
+                className="text-gray-400 group-hover:text-white transition-colors"
+              />
+            </Link>
+          </div>
         </div>
       </div>
     </div>
