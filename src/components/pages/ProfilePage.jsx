@@ -21,7 +21,7 @@ export const ProfilePage = () => {
 
   const handleLogout = () => {
     dispatch(logoutUser());
-    navigate("/login");
+    navigate("/");
   };
 
   const formatDate = (dateString) => {
