@@ -26,7 +26,7 @@ const Navbar = () => {
 
   const logout = () => {
     dispatch(logoutUser());
-    navigate("/login");
+    navigate("/");
   };
 
   const handleCerrarDia = () => {
