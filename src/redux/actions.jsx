@@ -16,6 +16,7 @@ export const signinUser = (userData) => {
   return async (dispatch) => {
     try {
       const res = await loginRequest(userData);
+      console.log(res)
       dispatch(signinSuccess(res.data));
       dispatch(verifyTokenAction()); // Verificar token después 6de iniciar sesión
     } catch (error) {

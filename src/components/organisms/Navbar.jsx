@@ -1,119 +1,254 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "@/redux/actions";
 import imguser from "@/img/user.svg";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronUp,
+  faChevronDown,
+  faSignOutAlt,
+  faUser,
+  faChartLine,
+  faBell,
+} from "@fortawesome/free-solid-svg-icons";
 
 import { cerrarDia } from "@/redux/actionTransaccion";
+
 const Navbar = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const user = useSelector((state) => state.auth.user);
   const ventas = useSelector((state) => state.transacciones.ventas);
   const compras = useSelector((state) => state.transacciones.compras);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
 
   const logout = () => {
     dispatch(logoutUser());
+    navigate("/login");
   };
-  const [isOpen, setIsOpen] = useState(false);
 
   const handleCerrarDia = () => {
-    // Obtén las ventas y compras del día, o de la forma que necesites
     const fechaActual = new Date().toISOString();
-
-    // Filtra las ventas del día
     const ventasDelDia = ventas.filter((venta) =>
-      venta.createdAt.includes(fechaActual)
+      venta.createdAt.includes(fechaActual),
     );
-
-    // Filtra las compras del día
     const comprasDelDia = compras.filter((compra) =>
-      compra.createdAt.includes(fechaActual)
+      compra.createdAt.includes(fechaActual),
     );
-    // Dispatch de la acción de cierre diario
     dispatch(cerrarDia(fechaActual, ventasDelDia, comprasDelDia));
   };
 
   return (
-    <div className="bg-zinc-900 flex justify-between py-3 mt-0 px-10 rounded-sm">
-      <h1 className="text-xl ml-16 self-center text-white font-bold">
-        Sistema de Inventario
-      </h1>
-
-      <div className="flex  gap-x-6">
-        {isAuthenticated ? (
-          <>
-            <div className="dropdown relative md:static ">
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="menu-btn focus:outline-none focus:shadow-outline flex flex-wrap items-center"
-              >
-                <div className="w-10 h-10 overflow-hidden rounded-full">
-                  <img className="w-full h-full object-cover" src={imguser} />
-                </div>
-                <div className="ml-2 capitalize flex ">
-                  <h1 className="text-md text-white font-semibold m-0 p-0 leading-none">
-                    {user.username}
-                  </h1>
-                </div>
-                <FontAwesomeIcon
-                  icon={isOpen ? faChevronUp : faChevronDown}
-                  className="ml-2 text-xs leading-none"
-                />
-              </button>
-              <div
-                className={`absolute right-0 mt-2 w-48 bg-white text-neutral-900 rounded-lg py-2 shadow-xl ${
-                  isOpen ? "block" : "hidden"
-                }`}
-              >
-                <NavLink
-                  exact="true"
-                  to="/task/new"
-                  className="px-4 py-2 block bg-white hover:bg-gray-600 hover:text-gray-900 transition-all duration-300 ease-in-out"
-                >
-                  Tarea Nueva
-                </NavLink>
-                <hr></hr>
-                <NavLink
-                  exact="true"
-                  to="/login"
-                  className="px-4 py-2 block bg-white hover:bg-gray-600 hover:text-gray-900 transition-all duration-300 ease-in-out"
-                  onClick={() => logout()}
-                >
-                  Logout
-                </NavLink>
-
-                <button
-                  className="px-4 py-2 w-full bg-white rounded-md p-2 text-left hover:bg-red-600 text-black transition-all duration-300 ease-in-out "
-                  onClick={handleCerrarDia}
-                >
-                  Cerrar Día
-                </button>
-              </div>
+    <nav className="bg-secondary-800/95 backdrop-blur-sm border-b border-secondary-700 sticky top-0 z-50">
+      <div className="px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg shadow-lg">
+              <FontAwesomeIcon
+                icon={faChartLine}
+                className="text-white text-lg"
+              />
             </div>
-          </>
-        ) : (
-          <>
-            <Link
-              exact="true"
-              to="/login"
-              className="bg-indigo-700 rounded-lg px-4 py-1"
-            >
-              Login
-            </Link>
-            <Link
-              exact="true"
-              to="/register"
-              className="bg-indigo-700 rounded-lg px-4 py-1"
-            >
-              Registrarse
-            </Link>
-          </>
-        )}
+            <span className="text-xl font-bold text-white hidden sm:block">
+              Inventario<span className="text-primary-400">Pro</span>
+            </span>
+          </div>
+
+          {/* Navigation Links */}
+          <div className="hidden md:flex items-center gap-6">
+            {isAuthenticated && (
+              <>
+                <NavLink
+                  to="/home"
+                  className={({ isActive }) =>
+                    `text-sm font-medium transition-colors duration-200 ${
+                      isActive
+                        ? "text-primary-400"
+                        : "text-gray-400 hover:text-white"
+                    }`
+                  }
+                >
+                  Dashboard
+                </NavLink>
+                <NavLink
+                  to="/products"
+                  className={({ isActive }) =>
+                    `text-sm font-medium transition-colors duration-200 ${
+                      isActive
+                        ? "text-primary-400"
+                        : "text-gray-400 hover:text-white"
+                    }`
+                  }
+                >
+                  Productos
+                </NavLink>
+                <NavLink
+                  to="/ventas"
+                  className={({ isActive }) =>
+                    `text-sm font-medium transition-colors duration-200 ${
+                      isActive
+                        ? "text-primary-400"
+                        : "text-gray-400 hover:text-white"
+                    }`
+                  }
+                >
+                  Ventas
+                </NavLink>
+              </>
+            )}
+          </div>
+
+          {/* Right Section */}
+          <div className="flex items-center gap-4">
+            {isAuthenticated ? (
+              <>
+                {/* Notifications */}
+                <button className="relative p-2 text-gray-400 hover:text-white transition-colors duration-200">
+                  <FontAwesomeIcon icon={faBell} className="text-lg" />
+                  <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                </button>
+
+                {/* User Menu */}
+                <div className="relative">
+                  <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="flex items-center gap-3 p-1.5 rounded-lg hover:bg-secondary-700 transition-colors duration-200"
+                  >
+                    <div className="w-8 h-8 overflow-hidden rounded-full bg-secondary-700 flex items-center justify-center">
+                      <img
+                        className="w-full h-full object-cover"
+                        src={imguser}
+                        alt="Usuario"
+                      />
+                    </div>
+                    <div className="hidden sm:block text-left">
+                      <p className="text-sm font-medium text-white leading-none">
+                        {user?.username || "Usuario"}
+                      </p>
+                      <p className="text-xs text-gray-400 leading-none mt-0.5">
+                        Admin
+                      </p>
+                    </div>
+                    <FontAwesomeIcon
+                      icon={isOpen ? faChevronUp : faChevronDown}
+                      className="text-xs text-gray-400 hidden sm:block"
+                    />
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  <div
+                    className={`absolute right-0 w-56 bg-secondary-800 border border-secondary-700 rounded-xl shadow-xl py-2 transform transition-all duration-200 ${
+                      isOpen
+                        ? "opacity-100 scale-100 translate-y-0"
+                        : "opacity-0 scale-95 -translate-y-2 pointer-events-none"
+                    }`}
+                  >
+                    <div className="px-4 py-2 border-b border-secondary-700">
+                      <p className="text-sm font-medium text-white">
+                        {user?.username}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        {user?.email || "admin@inventario.com"}
+                      </p>
+                    </div>
+
+                    <div className="py-1">
+                      <NavLink
+                        to="/profile"
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-secondary-700 hover:text-white transition-colors duration-150"
+                      >
+                        <FontAwesomeIcon icon={faUser} className="w-4 h-4" />
+                        Perfil
+                      </NavLink>
+                      <NavLink
+                        to="/home"
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-gray-300 hover:bg-secondary-700 hover:text-white transition-colors duration-150"
+                      >
+                        <FontAwesomeIcon
+                          icon={faChartLine}
+                          className="w-4 h-4"
+                        />
+                        Dashboard
+                      </NavLink>
+                    </div>
+
+                    <div className="border-t border-secondary-700 pt-1">
+                      <button
+                        onClick={handleCerrarDia}
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-amber-400 hover:bg-secondary-700 w-full transition-colors duration-150"
+                      >
+                        <FontAwesomeIcon
+                          icon={faChartLine}
+                          className="w-4 h-4"
+                        />
+                        Cerrar Día
+                      </button>
+                      <button
+                        onClick={logout}
+                        className="flex items-center gap-3 px-4 py-2 text-sm text-red-400 hover:bg-secondary-700 w-full transition-colors duration-150"
+                      >
+                        <FontAwesomeIcon
+                          icon={faSignOutAlt}
+                          className="w-4 h-4"
+                        />
+                        Cerrar Sesión
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center gap-3">
+                <Link
+                  to="/login"
+                  className="text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200"
+                >
+                  Iniciar Sesión
+                </Link>
+                <Link to="/register" className="btn-primary text-sm">
+                  Registrarse
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
-    </div>
+
+      {/* Mobile Menu */}
+      {isOpen && isAuthenticated && (
+        <div className="md:hidden bg-secondary-800 border-t border-secondary-700">
+          <div className="px-4 py-3 space-y-1">
+            <NavLink
+              to="/home"
+              className="block px-4 py-2 text-sm text-gray-300 hover:bg-secondary-700 rounded-lg"
+            >
+              Dashboard
+            </NavLink>
+            <NavLink
+              to="/products"
+              className="block px-4 py-2 text-sm text-gray-300 hover:bg-secondary-700 rounded-lg"
+            >
+              Productos
+            </NavLink>
+            <NavLink
+              to="/ventas"
+              className="block px-4 py-2 text-sm text-gray-300 hover:bg-secondary-700 rounded-lg"
+            >
+              Ventas
+            </NavLink>
+            <NavLink
+              to="/compras"
+              className="block px-4 py-2 text-sm text-gray-300 hover:bg-secondary-700 rounded-lg"
+            >
+              Compras
+            </NavLink>
+          </div>
+        </div>
+      )}
+    </nav>
   );
 };
 

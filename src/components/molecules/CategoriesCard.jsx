@@ -2,26 +2,39 @@
 import { removeCategory } from "@/redux/actionCategories";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-export function CategoriesCard({ categories }) {
-    const dispatch = useDispatch();
-    console.log(categories);
-  return (
-    <div>
-        <div className="bg-zinc-800 max-w-md  p-10 rounded-md">
-      <h1 className="text-2xl font-bold my-2">{categories.name}</h1>
-      <div className="flex justify-between ">
-        <button className=" my-5 bg-red-600 text-white rounded-sm py-2 px-2" onClick={()=>{
-           dispatch( removeCategory(categories._id));
-        }}>delete</button>
-        
-        <Link to={`/categoria/${categories._id}`} className=" my-5 ml-5 bg-indigo-700 rounded-md py-2 px-3">edit</Link>
-       
-      </div>
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTags, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 
-      
+export function CategoriesCard({ categories }) {
+  const dispatch = useDispatch();
+  console.log(categories);
+  return (
+    <div className="card card-hover">
+      <div className="flex items-start justify-between mb-4">
+        <div className="p-3 bg-primary-500/20 rounded-xl">
+          <FontAwesomeIcon icon={faTags} className="text-primary-400 text-xl" />
+        </div>
+      </div>
+      <h1 className="text-xl font-bold text-white mb-4">{categories.name}</h1>
+      <div className="flex gap-3">
+        <button
+          className="flex-1 btn-danger inline-flex items-center justify-center gap-2"
+          onClick={() => {
+            dispatch(removeCategory(categories._id));
+          }}
+        >
+          <FontAwesomeIcon icon={faTrash} />
+          Eliminar
+        </button>
+        <Link
+          to={`/categoria/${categories._id}`}
+          className="flex-1 btn-primary inline-flex items-center justify-center gap-2"
+        >
+          <FontAwesomeIcon icon={faEdit} />
+          Editar
+        </Link>
+      </div>
     </div>
-    </div>
-  
   );
 }
 

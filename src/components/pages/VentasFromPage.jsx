@@ -1,88 +1,70 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { addTransaccion } from "@/redux/actionTransaccion";
 import { getproducts } from "@/redux/actionProducts";
-import { useEffect, useState,useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { 
+  faPlus, 
+  faMinus, 
+  faTrash, 
+  faShoppingCart, 
+  faArrowLeft,
+  faUser
+} from "@fortawesome/free-solid-svg-icons";
 
 const VentasFromPage = () => {
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
   const navigation = useNavigate();
-  // const params = useParams();
 
   const products = useSelector((state) => state.product.products);
-  const [precioProductoSeleccionado, setPrecioProductoSeleccionado] = useState([]);
   const [productosVenta, setProductosVenta] = useState([]);
   const [agotadoMessage, setAgotadoMessage] = useState("");
   const [descuento, setDescuento] = useState(0);
 
   const handleAumentarPorcentaje = () => {
-    setDescuento(descuento + 5); // Puedes ajustar el incremento según tus necesidades
+    setDescuento(descuento + 5);
   };
 
   const handleDarDescuento = () => {
-    setDescuento(descuento - 5); // Puedes ajustar el decremento según tus necesidades
+    setDescuento(Math.max(descuento - 5, 0));
   };
-// Suponiendo que cada producto tiene un atributo "precioUnitario"
-const totalConDescuento = useMemo(() => {
 
-  const totalOriginal = productosVenta.reduce(
-    (accumulator, product) => accumulator + product.precioUnitario * product.cantidad,
-    0
-  );
-  const totalSinDescuento = productosVenta.reduce(
-    (accumulator, product) => accumulator + product.precioVenta * product.cantidad,
-    0
-  );
-    console.log(totalOriginal,totalSinDescuento);
-  
-  const descuentoAplicado = totalSinDescuento * (descuento / 100);
-  const totalConDescuento = Math.max(totalSinDescuento - descuentoAplicado, 0);
+  const totalConDescuento = useMemo(() => {
+    const totalSinDescuento = productosVenta.reduce(
+      (acc, product) => acc + (product.precioVenta || product.precioUnitario) * product.cantidad,
+      0
+    );
+    
+    const descuentoAplicado = totalSinDescuento * (descuento / 100);
+    return Math.max(totalSinDescuento - descuentoAplicado, 0);
+  }, [productosVenta, descuento]);
 
-  
-  if (totalConDescuento < totalOriginal) {
-    alert('El descuento no puede hacer que el precio total sea menor al precio original');
-    setDescuento(0)
-    return totalSinDescuento
-  }
-  return totalConDescuento;
-}, [productosVenta, descuento]);
-
-const formatCurrency = (value) => {
-  return new Intl.NumberFormat('es-CO', {
-    style: 'currency',
-    currency: 'COP' // Cambia 'COL' por el código de la moneda que necesitas
-  }).format(value);
-};
-
-// Llamas a formatCurrency con el total calculado para obtenerlo en formato de moneda
-const totalFormateadoConDescuento = formatCurrency(totalConDescuento);
-console.log('Total:', totalFormateadoConDescuento); // Muestra el total en formato de moneda
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat('es-CO', {
+      style: 'currency',
+      currency: 'COP',
+    }).format(value);
+  };
 
   const onSubmit = handleSubmit((data) => {
-
     const productosSinNombre = productosVenta.map(producto => {
-      // eslint-disable-next-line no-unused-vars
-      const { nombre,precioVenta, ...resto } = producto;
+      const { nombre, precioVenta, ...resto } = producto;
       return resto;
     });
     
-    // Luego pasas productosSinNombre como productos
-      console.log(productosSinNombre);
-
-    const datos ={
-      tipo: "Venta", // Establecer tipo como Venta
+    const datos = {
+      tipo: "Venta",
       productos: productosSinNombre,
-      precioTotal:totalConDescuento,
-      cliente:data.cliente
-    }
-    console.log(datos);
+      precioTotal: totalConDescuento,
+      cliente: data.cliente
+    };
+    
     dispatch(addTransaccion(datos));
-
     setTimeout(() => {
       navigation("/ventas");
-   
     }, 500);
   });
 
@@ -91,34 +73,12 @@ console.log('Total:', totalFormateadoConDescuento); // Muestra el total en forma
   }, []);
 
   useEffect(() => {
-    productosVenta.forEach((producto, index) => {
-      const cantidadInput = document.getElementById(`cantidad-${index}`);
-      const precioInput = document.getElementById(`precio-${index}`);
-
-      if (cantidadInput?.value !== producto?.cantidad.toString()) {
-        // Si la cantidad en el input no coincide con la cantidad del producto, actualiza
-        cantidadInput.value = producto.cantidad;
-      }
-
-      if (precioInput?.value !== producto.precioUnitario.toString()) {
-        // Si el precio en el input no coincide con el precio del producto, actualiza
-        precioInput.value = producto.precioVenta || producto.precioUnitario;
-      }
-    });
-  
-  }, [productosVenta]);
-
-
-  useEffect(() => {
     let timeoutId;
-  
     if (agotadoMessage) {
       timeoutId = setTimeout(() => {
         setAgotadoMessage("");
       }, 5000);
     }
-  
-    // Limpiar el temporizador si el componente se desmonta o si agotadoMessage cambia
     return () => clearTimeout(timeoutId);
   }, [agotadoMessage]);
   
@@ -127,207 +87,292 @@ console.log('Total:', totalFormateadoConDescuento); // Muestra el total en forma
     const selectedProduct = products.find(
       (product) => product._id === selectedProductId
     );
-    const nombreP = selectedProduct.nombre;
-    const precioParsed = parseFloat(selectedProduct?.precio);
-   
+    
+    if (!selectedProduct) return;
+
     if (selectedProduct.stock === 0) {
-      // Evitar agregar productos con stock igual a cero
       setAgotadoMessage(`El producto "${selectedProduct.nombre}" está agotado.`);
       return;
-    }else{
+    }
 
-      // Verificar si el producto ya está en productosVenta
     const productoExistenteIndex = productosVenta.findIndex(
       (producto) => producto.producto === selectedProduct._id
     );
-    if (productoExistenteIndex !== -1) {
-      // Si el producto ya está en productosVenta, actualiza su precioUnitario
-     return;
-    } else {
+
+    if (productoExistenteIndex === -1) {
       setAgotadoMessage("");
-      // Si el producto no está en productosVenta, agrégalo
       setProductosVenta([
         ...productosVenta,
         {
           producto: selectedProductId,
-          precioUnitario: precioParsed,
+          precioUnitario: parseFloat(selectedProduct?.precio),
+          precioVenta: parseFloat(selectedProduct?.precio),
           cantidad: 1,
-          nombre:nombreP
+          nombre: selectedProduct.nombre,
+          stock: selectedProduct.stock,
         },
       ]);
     }
-    }
-    
-   
   };
 
   const handleEliminarProducto = (index) => {
-    setProductosVenta((prevProductosVenta) => {
-      const updatedProductosVenta = [...prevProductosVenta];
-      updatedProductosVenta.splice(index, 1);
-      return updatedProductosVenta;
+    setProductosVenta((prev) => {
+      const updated = [...prev];
+      updated.splice(index, 1);
+      return updated;
     });
   };
 
-  
   const handleCantidadChange = (event, index) => {
     const inputCantidad = parseInt(event.target.value, 10);
-    const updatedProductosVenta = [...productosVenta];
-    
-    const selectedProduct = products.find(
-      (product) => product._id === updatedProductosVenta[index].producto
-    );
-    
-    const stock = selectedProduct?.stock;
-
+    const updated = [...productosVenta];
+    const stock = updated[index].stock;
 
     if (inputCantidad >= 1 && inputCantidad <= stock) {
-      updatedProductosVenta[index].cantidad = parseInt(inputCantidad);
-      setProductosVenta(updatedProductosVenta);
+      updated[index].cantidad = inputCantidad;
     } else if (inputCantidad > stock) {
-      updatedProductosVenta[index].cantidad = stock;
-      setProductosVenta(updatedProductosVenta);
+      updated[index].cantidad = stock;
     } else {
-      updatedProductosVenta[index].cantidad = 1;
-      setProductosVenta(updatedProductosVenta);
+      updated[index].cantidad = 1;
     }
+    setProductosVenta(updated);
   };
 
   const handlePriceChange = (event, index) => {
-  const newPrice = parseFloat(event.target.value);
-  const updatedProductosVenta = [...productosVenta];
-  const selectedProduct = products.find(
-    (product) => product._id === updatedProductosVenta[index].producto
-  );
-   
-  const precioCompra = selectedProduct?.precio;
-  
-  // Verifica que el nuevo precio no sea menor al precio de compra ni al precio original
-  if (newPrice >= precioCompra ) {
-    // Si el nuevo precio es válido, actualiza el estado
-    const newProductosVenta = [...productosVenta];
-    newProductosVenta[index].precioVenta = newPrice
-    console.log(newProductosVenta[index].precioVenta );
-    setProductosVenta(newProductosVenta);
-  } else {
-    // Si el nuevo precio es inválido, muestra una alerta
-    alert('El precio de venta no puede ser menor al precio de compra ni al precio original');
-    
-  }
-};
+    const newPrice = parseFloat(event.target.value);
+    const updated = [...productosVenta];
+    const selectedProduct = products.find(p => p._id === updated[index].producto);
+    const precioCompra = selectedProduct?.precio;
 
-
+    if (newPrice >= precioCompra) {
+      updated[index].precioVenta = newPrice;
+      setProductosVenta(updated);
+    }
+  };
 
   return (
-    <div className="h-screen w-full flex items-center">
-       <div className="bg-zinc-800 ventas rounded-md grid gap-4">
-        <h1 className=" font-bold text-3xl">Nueva Venta</h1>
-       {agotadoMessage && (
-        <div className="bg-red-600 text-white p-3 rounded-lg my-3">
-          {agotadoMessage}
-        </div>
-      )}
-      <form onSubmit={onSubmit} className="grid gap-4">
-        <select
-          className="w-full bg-zinc-700 grid-auto-rows px-4 py-2 rounded-md"
-          onChange={handleSelectChange}
-        >
-          <option value="">Selecciona un producto</option>
-          {products.map((product) => (
-            <option key={product._id} value={product._id}>
-              {product.nombre}
-            </option>
-          ))}
-        </select>
-        
-        <div className="grid gap-4">
-          {productosVenta.map((producto, index) => (
-            <div key={index} className="grid grid-cols-3 gap-4">
-              <span>{`${producto?.nombre}`}</span>
-              
-              <div className="flex flex-col">
-                <button
-                  type="button"
-                  onClick={() => handleAumentarPorcentaje(index)}
-                  className="bg-green-500 text-white rounded-md px-2 py-1 mr-2 mb-2"
-                >
-                  +5%
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleDarDescuento(index)}
-                  className="bg-red-500 text-white rounded-md px-2 py-1 mr-2"
-                >
-                  -5%
-                </button>
-              </div>
-              
-              <div className="grid gap-2 w-full ">
-                <input
-                  type="number"
-                  id={`cantidad-${index}`}
-                  placeholder={`${producto?.producto?.stock}`}
-                  {...register(`cantidad[${index}]`)}
-                  autoFocus
-                  className="w-full bg-zinc-700 px-2 py-1 rounded-md"
-                  value={producto?.cantidad}
-                  onChange={(e) => handleCantidadChange(e, index)}
-                />
-                
-                <input
-                  type="number"
-                  id={`precio-${index}`}
-                  placeholder={`${producto?.producto?.precio}`}
-                  {...register(`precioUnitario[${index}]`)}
-                  autoFocus
-                  className="w-full bg-zinc-700 px-4 py-2 rounded-md"
-                  onBlur={(e) => handlePriceChange(e, index)}
-                 
-                />
-                
-                <button
-                  type="button"
-                  onClick={() => handleEliminarProducto(index)}
-                  className="bg-red-600 text-white rounded-md px-2 py-1"
-                >
-                  Eliminar
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-        
-      
-        
-        <div className="flex justify-between">
-          Descuento: {descuento}%
-          <span className="flex justify-end">{totalFormateadoConDescuento}</span>
-        </div>
-        
-        <input
-          type="text"
-          placeholder="cliente"
-          {...register("cliente")}
-          autoFocus
-          className="w-full bg-zinc-700 px-4 py-2 rounded-md"
-        />
-        
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            className="bg-green-800 mt-4 rounded-lg px-4 py-1"
+    <div className="animate-fade-in">
+      {/* Page Header */}
+      <div className="page-header">
+        <div className="flex items-center gap-4">
+          <Link
+            to="/ventas"
+            className="p-2 bg-secondary-700 rounded-lg hover:bg-secondary-600 transition-colors"
           >
-            Save
-          </button>
+            <FontAwesomeIcon icon={faArrowLeft} className="text-gray-400" />
+          </Link>
+          <div>
+            <h1 className="page-title">Nueva Venta</h1>
+            <p className="page-subtitle">
+              Registra una nueva venta de productos
+            </p>
+          </div>
         </div>
-      </form>
-      
-     
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Product Selection */}
+        <div className="lg:col-span-2">
+          <div className="card p-6">
+            <h2 className="text-lg font-semibold text-white mb-4">
+              Seleccionar Productos
+            </h2>
+
+            {agotadoMessage && (
+              <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 text-red-400 rounded-lg">
+                {agotadoMessage}
+              </div>
+            )}
+
+            <select
+              className="input-field mb-6"
+              onChange={handleSelectChange}
+            >
+              <option value="">Selecciona un producto</option>
+              {products.map((product) => (
+                <option 
+                  key={product._id} 
+                  value={product._id}
+                  disabled={product.stock === 0}
+                >
+                  {product.nombre} - Stock: {product.stock}
+                </option>
+              ))}
+            </select>
+
+            {/* Selected Products */}
+            {productosVenta.length > 0 && (
+              <div className="space-y-4">
+                {productosVenta.map((producto, index) => (
+                  <div
+                    key={index}
+                    className="p-4 bg-secondary-700/50 rounded-lg border border-secondary-600"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="font-semibold text-white">{producto.nombre}</h3>
+                      <button
+                        type="button"
+                        onClick={() => handleEliminarProducto(index)}
+                        className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors"
+                      >
+                        <FontAwesomeIcon icon={faTrash} />
+                      </button>
+                    </div>
+                    
+                    <div className="grid grid-cols-3 gap-4">
+                      <div>
+                        <label className="label">Cantidad</label>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = [...productosVenta];
+                              updated[index].cantidad = Math.max(updated[index].cantidad - 1, 1);
+                              setProductosVenta(updated);
+                            }}
+                            className="p-2 bg-secondary-600 rounded-lg hover:bg-secondary-500"
+                          >
+                            <FontAwesomeIcon icon={faMinus} />
+                          </button>
+                          <input
+                            type="number"
+                            value={producto.cantidad}
+                            onChange={(e) => handleCantidadChange(e, index)}
+                            className="input-field text-center w-20"
+                            min="1"
+                            max={producto.stock}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = [...productosVenta];
+                              updated[index].cantidad = Math.min(updated[index].cantidad + 1, producto.stock);
+                              setProductosVenta(updated);
+                            }}
+                            className="p-2 bg-secondary-600 rounded-lg hover:bg-secondary-500"
+                          >
+                            <FontAwesomeIcon icon={faPlus} />
+                          </button>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <label className="label">Precio Unitario</label>
+                        <input
+                          type="number"
+                          value={producto.precioVenta}
+                          onChange={(e) => handlePriceChange(e, index)}
+                          className="input-field"
+                          step="0.01"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="label">Subtotal</label>
+                        <p className="text-lg font-semibold text-white">
+                          {formatCurrency(producto.precioVenta * producto.cantidad)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Summary */}
+        <div>
+          <div className="card p-6 sticky top-20">
+            <h2 className="text-lg font-semibold text-white mb-4">
+              Resumen de Venta
+            </h2>
+
+            {productosVenta.length === 0 ? (
+              <p className="text-gray-400 text-center py-8">
+                No hay productos seleccionados
+              </p>
+            ) : (
+              <>
+                <div className="space-y-3 mb-4">
+                  <div className="flex justify-between text-gray-400">
+                    <span>Productos</span>
+                    <span>{productosVenta.length}</span>
+                  </div>
+                  <div className="flex justify-between text-gray-400">
+                    <span>Subtotal</span>
+                    <span>
+                      {formatCurrency(
+                        productosVenta.reduce(
+                          (acc, p) => acc + p.precioVenta * p.cantidad,
+                          0
+                        )
+                      )}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-400">Descuento</span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={handleDarDescuento}
+                        className="p-1 bg-red-500/20 text-red-400 rounded hover:bg-red-500/30"
+                      >
+                        <FontAwesomeIcon icon={faMinus} />
+                      </button>
+                      <span className="text-white font-medium">{descuento}%</span>
+                      <button
+                        type="button"
+                        onClick={handleAumentarPorcentaje}
+                        className="p-1 bg-green-500/20 text-green-400 rounded hover:bg-green-500/30"
+                      >
+                        <FontAwesomeIcon icon={faPlus} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-t border-secondary-700 pt-4 mb-6">
+                  <div className="flex justify-between items-center">
+                    <span className="text-lg font-semibold text-white">Total</span>
+                    <span className="text-2xl font-bold text-emerald-400">
+                      {formatCurrency(totalConDescuento)}
+                    </span>
+                  </div>
+                </div>
+
+                <form onSubmit={onSubmit} className="space-y-4">
+                  <div>
+                    <label className="label">Cliente</label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <FontAwesomeIcon icon={faUser} className="text-gray-400" />
+                      </div>
+                      <input
+                        type="text"
+                        placeholder="Nombre del cliente"
+                        {...register("cliente")}
+                        className="input-field pl-10"
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="btn-primary w-full py-3"
+                    disabled={productosVenta.length === 0}
+                  >
+                    <FontAwesomeIcon icon={faShoppingCart} className="mr-2" />
+                    Confirmar Venta
+                  </button>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
-    </div>
-   
   );
-  
 };
 
 export default VentasFromPage;

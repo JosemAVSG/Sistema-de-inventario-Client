@@ -7,8 +7,7 @@ import {
   getFilteredRowModel,
   getSortedRowModel,
 } from "@tanstack/react-table";
-import classNames from "classnames";
-import { rankItem } from "@tanstack/match-sorter-utils";
+import { rankItem } from '@tanstack/match-sorter-utils';
 import {
   MagnifyingGlassIcon,
   BarsArrowDownIcon,
@@ -20,15 +19,13 @@ import {
   ChevronRightIcon,
 } from "@heroicons/react/24/solid";
 import DateRangePicker from "@/components/molecules/DataRangePicker";
+
 const fuzzyFilter = (row, columnId, value, addMeta) => {
   const itemRank = rankItem(row.getValue(columnId), value);
-
   addMeta({ itemRank });
-
   return itemRank.passed;
 };
 
-// eslint-disable-next-line react/prop-types
 const DebouncedInput = ({ value: keyWord, onChange, ...props }) => {
   const [value, setValue] = useState(keyWord);
 
@@ -36,7 +33,6 @@ const DebouncedInput = ({ value: keyWord, onChange, ...props }) => {
     const timeout = setTimeout(() => {
       onChange(value);
     }, 500);
-
     return () => clearTimeout(timeout);
   }, [value]);
 
@@ -45,136 +41,86 @@ const DebouncedInput = ({ value: keyWord, onChange, ...props }) => {
       {...props}
       value={value}
       onChange={(e) => setValue(e.target.value)}
+      className="input-field pl-10"
     />
   );
 };
 
 const DataTableSell = (datas) => {
-
   const [globalFilter, setGlobalFilter] = useState("");
-  const [sorting, setSorting] = useState([
-    {
-      id: "productos",
-      desc: false, // Establecer a false para orden ascendente
-    },
-  ]);
-  const [startDate, setStartDate] = useState(null); // Estado para la fecha de inicio
+  const [sorting, setSorting] = useState([]);
+  const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [filteredData, setFilteredData] = useState(datas.data);
+
   const total = useMemo(() => {
-    return datas.data.reduce((accumulator, venta) => {
-      return accumulator + venta.precioTotal;
+    return datas.data.reduce((acc, venta) => {
+      return acc + (venta.precioTotal || 0);
     }, 0);
   }, [datas.data]);
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat("es-CO", {
       style: "currency",
-      currency: "COP", // Cambia 'COL' por el código de la moneda que necesitas
+      currency: "COP",
     }).format(value);
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "-";
+    const fecha = new Date(dateString);
+    return fecha.toLocaleDateString("es-CO", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   const columns = [
     {
-      accessorKey: "_id",
-      header: () => <span>ID</span>,
+      accessorKey: "createdAt",
+      header: "Fecha",
+      cell: ({ row }) => (
+        <span className="text-gray-300">{formatDate(row.original.createdAt)}</span>
+      ),
     },
     {
       accessorKey: "cliente",
-      header: () => <span className="">cliente</span>,
+      header: "Cliente",
+      cell: ({ row }) => (
+        <span className="text-white">{row.original.cliente || "General"}</span>
+      ),
     },
     {
       accessorKey: "productos",
-      header: () => <span>Productos</span>,
+      header: "Productos",
       cell: ({ row }) => {
-        const productos = row.getValue("productos");
-
-        const formatCurrency = (value) => {
-          return new Intl.NumberFormat("es-CO", {
-            style: "currency",
-            currency: "COP", // Cambia 'COL' por el código de la moneda que necesitas
-          }).format(value);
-        };
+        const productos = row.original.productos || [];
         return (
-          <div>
-            {productos.map((producto, index) => (
-              <div key={index}>
-                <p>{producto.producto.nombre}</p>
-                <p>Precio: {formatCurrency(producto.precioUnitario)}</p>
+          <div className="space-y-1">
+            {productos.slice(0, 2).map((producto, index) => (
+              <div key={index} className="text-sm">
+                <span className="text-gray-300">{producto.producto?.nombre || "Producto"}</span>
+                <span className="text-gray-500 ml-2">x{producto.cantidad}</span>
               </div>
             ))}
+            {productos.length > 2 && (
+              <span className="text-xs text-gray-500">+{productos.length - 2} más</span>
+            )}
           </div>
         );
       },
-    },
-    {
-      accessorKey: "cantidad",
-      header: () => <span>Cantidad</span>,
-      cell: ({ row }) => {
-        const productos = row.getValue("productos");
-
-        return (
-          <div>
-            {productos.map((producto, index) => (
-              <div key={index}>
-                <p>{producto.cantidad}</p>
-              </div>
-            ))}
-          </div>
-        );
-      },
-      enableSorting: true,
     },
     {
       accessorKey: "precioTotal",
-      header: () => <span>Total</span>,
-      cell: ({ row }) => {
-        const precioTotal = row.getValue("precioTotal");
-
-        const formatCurrency = (value) => {
-          return new Intl.NumberFormat("es-CO", {
-            style: "currency",
-            currency: "COP", // Cambia 'COL' por el código de la moneda que necesitas
-          }).format(value);
-        };
-        return (
-          <div>
-            <p>{formatCurrency(precioTotal)}</p>
-          </div>
-        );
-      },
-    },
-    {
-      accessorKey: "createdAt",
-      header: () => <span className="">Fecha</span>,
-      cell: ({ row }) => {
-        const fechaString = row.original.createdAt; // Ajusta esto según la estructura real de tus datos
-        const fecha = new Date(fechaString);
-        const opcionesDeFormato = {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "numeric",
-          minute: "numeric",
-          second: "numeric",
-          hour12: true, // Indica que quieres formato de 12 horas
-          timeZone: "UTC",
-        };
-
-        const fechaFormateada = fecha.toLocaleDateString(
-          "es-ES",
-          opcionesDeFormato
-        );
-        const partesFecha = fechaFormateada.split(", ");
-
-        return (
-          <div style={{ display: "contents" }}>
-            {partesFecha.map((parte, index) => (
-              <div key={index}>{parte}</div>
-            ))}
-          </div>
-        );
-      },
+      header: "Total",
+      cell: ({ row }) => (
+        <span className="font-semibold text-emerald-400">
+          {formatCurrency(row.original.precioTotal || 0)}
+        </span>
+      ),
     },
   ];
 
@@ -183,15 +129,9 @@ const DataTableSell = (datas) => {
     const pageSize = table.getState().pagination.pageSize;
     const pageIndex = table.getState().pagination.pageIndex;
     const rowsPerPage = table.getRowModel().rows.length;
-
     const firstIndex = pageIndex * pageSize + 1;
     const lastIndex = pageIndex * pageSize + rowsPerPage;
-
-    return {
-      totalRows,
-      firstIndex,
-      lastIndex,
-    };
+    return { totalRows, firstIndex, lastIndex };
   };
 
   const handleStartDateChange = (date) => {
@@ -202,30 +142,16 @@ const DataTableSell = (datas) => {
     setEndDate(date);
   };
 
-  // ...
-
   const applyDateFilter = () => {
-    // Verifica si ambas fechas están definidas antes de aplicar el filtro
     if (startDate && endDate) {
-      // Lógica para aplicar el filtro de fechas
-      const filteredData = datas.data.filter((row) => {
-        // Formatea startDate en formato ISO
-        const formattedStartDate = new Date(startDate)
-          .toISOString()
-          .split("T")[0];
-        // Formatea endDate en formato ISO
-        const formattedEndDate = new Date(endDate).toISOString().split("T")[0];
-        // Obtén solo la parte de la fecha (sin la hora) de la fila
+      const filtered = datas.data.filter((row) => {
         const rowDate = row.createdAt.split("T")[0];
-
-        // Compara las partes de la fecha sin la hora
+        const formattedStartDate = new Date(startDate).toISOString().split("T")[0];
+        const formattedEndDate = new Date(endDate).toISOString().split("T")[0];
         return rowDate >= formattedStartDate && rowDate <= formattedEndDate;
       });
-
-      // Actualiza el estado con los datos filtrados
-      setFilteredData(filteredData);
+      setFilteredData(filtered);
     } else {
-      // Si alguna de las fechas no está definida, muestra todos los datos
       setFilteredData(datas.data);
     }
   };
@@ -238,9 +164,7 @@ const DataTableSell = (datas) => {
       sorting,
     },
     initialState: {
-      pagination: {
-        pageSize: 5,
-      },
+      pagination: { pageSize: 5 },
     },
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -251,63 +175,54 @@ const DataTableSell = (datas) => {
   });
 
   return (
-    <div className="px-6 py-6 w-full h-screen">
-      <header className="bg-gray-900 shadow">
-        <div className="mx-auto py-6 px-4">
-          <h1 className="text-white font-bold text-3xl">{datas.data[0].tipo}</h1>
-        </div>
-      </header>
-      <div className="my-2 flex justify-end">
-        <div className="relative">
-          <div className="text-black">
-            <DateRangePicker
-              startDate={startDate}
-              endDate={endDate}
-              onStartDateChange={handleStartDateChange}
-              onEndDateChange={handleEndDateChange}
-              onFilterClick={applyDateFilter}
-            />
-          </div>
-          <div className="flex justify-end py-2">
+    <div className="p-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <h2 className="text-xl font-semibold text-white">
+          {datas.data[0]?.tipo || "Transacciones"}
+        </h2>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="relative">
             <DebouncedInput
               type="text"
               value={globalFilter ?? ""}
               onChange={(value) => setGlobalFilter(String(value))}
-              className="px-6 py-2 text-gray-600 border border-gray-300 rounded outline-indigo-700"
               placeholder="Buscar..."
             />
-            <MagnifyingGlassIcon className="w-5 h-5 absolute top-3 left-1" />
+            <MagnifyingGlassIcon className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           </div>
+          <DateRangePicker
+            startDate={startDate}
+            endDate={endDate}
+            onStartDateChange={handleStartDateChange}
+            onEndDateChange={handleEndDateChange}
+            onFilterClick={applyDateFilter}
+          />
         </div>
       </div>
-      <div className="overflow-auto">
-        <table className="table-auto w-full min-w-[560px]">
-          <thead>
+
+      {/* Table */}
+      <div className="table-container">
+        <table className="w-full">
+          <thead className="bg-secondary-700">
             {table.getHeaderGroups().map((headerGroup) => (
-              <tr
-                key={headerGroup.id}
-                className="border-b border-gray-300 text-gray-600 bg-gray-100"
-              >
+              <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <th key={header.id} className="py-2 px-4 text-left uppercase">
+                  <th key={header.id} className="table-header px-4 py-3 text-left">
                     {header.isPlaceholder ? null : (
                       <div
-                        className={classNames({
-                          "cursor-pointer select-none flex justify-between":
-                            header.column.getCanSort(),
-                        })}
+                        className={`flex items-center gap-2 ${
+                          header.column.getCanSort() ? "cursor-pointer select-none" : ""
+                        }`}
                         onClick={header.column.getToggleSortingHandler()}
                       >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        {flexRender(header.column.columnDef.header, header.getContext())}
                         {{
-                          asc: <BarsArrowUpIcon className="w-5 h-5" />,
-                          desc: <BarsArrowDownIcon className="w-5 h-5" />,
+                          asc: <BarsArrowUpIcon className="w-4 h-4 text-primary-400" />,
+                          desc: <BarsArrowDownIcon className="w-4 h-4 text-primary-400" />,
                         }[header.column.getIsSorted()] ??
                           (header.column.getCanSort() ? (
-                            <ChevronUpDownIcon className="w-5 h-5" />
+                            <ChevronUpDownIcon className="w-4 h-4 text-gray-400" />
                           ) : null)}
                       </div>
                     )}
@@ -320,42 +235,42 @@ const DataTableSell = (datas) => {
             {table.getRowModel().rows.map((row) => (
               <tr
                 key={row.id}
-                className="text-white px-2 rounded-full font-semibold hover:bg-blue-500"
+                className="hover:bg-secondary-700/50 transition-colors border-b border-secondary-700"
               >
                 {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="py-2 px-4">
+                  <td key={cell.id} className="table-cell">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
               </tr>
             ))}
+          </tbody>
+          {/* Footer with Total */}
+          <tfoot className="bg-secondary-700/50">
             <tr>
-              <td
-                colSpan="4"
-                className="text-white px-2 rounded-full font-semibold"
-              >
+              <td colSpan="2" className="px-4 py-3 text-right font-semibold text-white">
                 Total General:
               </td>
-              <td className="px-4 py-2 text-white rounded-full font-semibold">
+              <td className="px-4 py-3 font-bold text-emerald-400">
                 {formatCurrency(total)}
               </td>
             </tr>
-          </tbody>
+          </tfoot>
         </table>
       </div>
-      <div className="mt-4 md:flex items-center justify-between space-y-4 text-center">
+
+      {/* Pagination */}
+      <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-2">
           <button
-            className="text-gray-600 bg-gray-200 py-0.5 px-1 rounded border border-gray-300
-            disabled:hover:bg-white disabled:hover:text-gray-300"
+            className="p-2 rounded-lg bg-secondary-700 text-gray-400 hover:text-white hover:bg-secondary-600 transition-colors disabled:opacity-50"
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
           >
             <ChevronDoubleLeftIcon className="w-5 h-5" />
           </button>
           <button
-            className="text-gray-600 bg-gray-200 py-0.5 px-1 rounded border border-gray-300
-            disabled:hover:bg-white disabled:hover:text-gray-300"
+            className="p-2 rounded-lg bg-secondary-700 text-gray-400 hover:text-white hover:bg-secondary-600 transition-colors disabled:opacity-50"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
@@ -365,11 +280,11 @@ const DataTableSell = (datas) => {
           {table.getPageOptions().map((value, key) => (
             <button
               key={key}
-              className={classNames({
-                "text-gray-600 bg-gray-200 py-0.5 px-2 font-bold rounded border border-gray-300 disabled:hover:bg-white disabled:hover:text-gray-300": true,
-                "bg-indigo-200 text-indigo-700":
-                  value === table.getState().pagination.pageIndex,
-              })}
+              className={`px-3 py-1.5 rounded-lg font-medium transition-colors ${
+                value === table.getState().pagination.pageIndex
+                  ? "bg-primary-600 text-white"
+                  : "bg-secondary-700 text-gray-400 hover:text-white"
+              }`}
               onClick={() => table.setPageIndex(value)}
             >
               {value + 1}
@@ -377,39 +292,37 @@ const DataTableSell = (datas) => {
           ))}
 
           <button
-            className="text-gray-600 bg-gray-200 py-0.5 px-1 rounded border border-gray-300
-            disabled:hover:bg-white disabled:hover:text-gray-300"
+            className="p-2 rounded-lg bg-secondary-700 text-gray-400 hover:text-white hover:bg-secondary-600 transition-colors disabled:opacity-50"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
             <ChevronRightIcon className="w-5 h-5" />
           </button>
           <button
-            className="text-gray-600 bg-gray-200 py-0.5 px-1 rounded border border-gray-300
-            disabled:hover:bg-white disabled:hover:text-gray-300"
+            className="p-2 rounded-lg bg-secondary-700 text-gray-400 hover:text-white hover:bg-secondary-600 transition-colors disabled:opacity-50"
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
           >
             <ChevronDoubleRightIcon className="w-5 h-5" />
           </button>
         </div>
-        <div className="text-gray-600 font-semibold">
-          Mostrando de {getStateTable().firstIndex}&nbsp; a{" "}
-          {getStateTable().lastIndex}&nbsp; del total de{" "}
-          {getStateTable().totalRows} registros
+
+        <div className="flex items-center gap-4">
+          <span className="text-sm text-gray-400">
+            Mostrando {getStateTable().firstIndex} a {getStateTable().lastIndex} de{" "}
+            {getStateTable().totalRows} registros
+          </span>
+          <select
+            className="input-field py-1.5 px-3"
+            onChange={(e) => table.setPageSize(Number(e.target.value))}
+          >
+            <option value="5">5 pág.</option>
+            <option value="10">10 pág.</option>
+            <option value="20">20 pág.</option>
+            <option value="25">25 pág.</option>
+            <option value="50">50 pág.</option>
+          </select>
         </div>
-        <select
-          className="text-gray-600 border border-gray-300 rounded outline-indigo-700 py-2"
-          onChange={(e) => {
-            table.setPageSize(Number(e.target.value));
-          }}
-        >
-          <option value="5">5 pág.</option>
-          <option value="10">10 pág.</option>
-          <option value="20">20 pág.</option>
-          <option value="25">25 pág.</option>
-          <option value="50">50 pág.</option>
-        </select>
       </div>
     </div>
   );
