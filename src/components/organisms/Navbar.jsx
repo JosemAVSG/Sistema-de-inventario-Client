@@ -203,7 +203,7 @@ const Navbar = () => {
             ) : (
               <div className="flex items-center gap-3">
                 <Link
-                  to="/login"
+                  to="/"
                   className="text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200"
                 >
                   Iniciar Sesión
