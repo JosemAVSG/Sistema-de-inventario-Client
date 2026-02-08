@@ -6,9 +6,16 @@ import { getCategories } from "@/redux/actionCategories";
 import { getProveedors } from "@/redux/actionProveedor";
 import { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBox, faDollarSign, faTags, faSave, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBox,
+  faDollarSign,
+  faTags,
+  faSave,
+  faArrowLeft,
+} from "@fortawesome/free-solid-svg-icons";
+import { Button } from "@/components/atoms/Button";
 
-const ProductsFormPage = () => {
+export const ProductsFormPage = () => {
   const { register, handleSubmit, setValue } = useForm();
   const dispatch = useDispatch();
   const navigation = useNavigate();
@@ -19,13 +26,13 @@ const ProductsFormPage = () => {
   const proveedores = useSelector((state) => state.proveedor.proveedors);
 
   const onSubmit = handleSubmit((data) => {
-    if (typeof data.stock === 'string') {
+    if (typeof data.stock === "string") {
       data.stock = parseInt(data.stock, 10);
     }
-    if (typeof data.precio === 'string') {
+    if (typeof data.precio === "string") {
       data.precio = parseFloat(data.precio);
     }
-    
+
     if (params.id !== "new") {
       dispatch(editproduct(params.id, data));
     } else {
@@ -59,7 +66,7 @@ const ProductsFormPage = () => {
   const isEditing = params.id !== "new";
 
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in flex flex-col gap-4">
       {/* Page Header */}
       <div className="page-header">
         <div className="flex items-center gap-4">
@@ -83,7 +90,7 @@ const ProductsFormPage = () => {
       </div>
 
       {/* Form Card */}
-      <div className="max-w-2xl">
+      <div className="max-w-2xl gap-4">
         <div className="card p-6">
           <form onSubmit={onSubmit} className="space-y-6">
             {/* Nombre */}
@@ -120,7 +127,10 @@ const ProductsFormPage = () => {
                 <label className="label">Precio</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FontAwesomeIcon icon={faDollarSign} className="text-gray-400" />
+                    <FontAwesomeIcon
+                      icon={faDollarSign}
+                      className="text-gray-400"
+                    />
                   </div>
                   <input
                     type="number"
@@ -180,17 +190,14 @@ const ProductsFormPage = () => {
             </div>
 
             {/* Buttons */}
-            <div className="flex justify-end gap-4 pt-4 border-t border-secondary-700">
-              <Link
-                to="/products"
-                className="btn-secondary"
-              >
+            <div className="flex justify-end gap-4 !pt-4 border-t border-secondary-700">
+              <Link to="/products" className="btn-secondary">
                 Cancelar
               </Link>
-              <button type="submit" className="btn-primary">
+              <Button type="submit">
                 <FontAwesomeIcon icon={faSave} className="mr-2" />
                 {isEditing ? "Guardar Cambios" : "Crear Producto"}
-              </button>
+              </Button>
             </div>
           </form>
         </div>
@@ -198,5 +205,3 @@ const ProductsFormPage = () => {
     </div>
   );
 };
-
-export default ProductsFormPage;

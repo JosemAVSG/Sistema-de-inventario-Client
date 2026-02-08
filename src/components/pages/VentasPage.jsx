@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMoneyBill1Wave } from "@fortawesome/free-solid-svg-icons";
 
-const VentasPage = () => {
+export const VentasPage = () => {
   const ventas = useSelector((state) => state.transacciones.ventas);
   const cierreDiarioRealizado = useSelector(
     (state) => state.transacciones.cierreDiarioRealizado
@@ -31,7 +31,7 @@ const VentasPage = () => {
   };
 
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in flex flex-col gap-4">
       {/* Page Header */}
       <div className="page-header">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -66,9 +66,7 @@ const VentasPage = () => {
             </div>
             <div>
               <p className="text-sm text-gray-400">Total Ventas</p>
-              <p className="text-2xl font-bold text-white">
-                {ventas.length}
-              </p>
+              <p className="text-2xl font-bold text-white">{ventas.length}</p>
             </div>
           </div>
         </div>
@@ -92,9 +90,7 @@ const VentasPage = () => {
           <div className="flex items-center gap-4">
             <div
               className={`p-3 rounded-xl ${
-                cierreDiarioRealizado
-                  ? "bg-amber-500/20"
-                  : "bg-green-500/20"
+                cierreDiarioRealizado ? "bg-amber-500/20" : "bg-green-500/20"
               }`}
             >
               <FontAwesomeIcon
@@ -153,5 +149,3 @@ const VentasPage = () => {
     </div>
   );
 };
-
-export default VentasPage;

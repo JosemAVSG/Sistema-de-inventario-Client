@@ -13,8 +13,9 @@ import {
   faArrowLeft,
   faUser
 } from "@fortawesome/free-solid-svg-icons";
+import { Button } from "@/components/atoms/Button";
 
-const VentasFromPage = () => {
+export const VentasFromPage = () => {
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
   const navigation = useNavigate();
@@ -151,7 +152,7 @@ const VentasFromPage = () => {
   };
 
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in flex flex-col gap-4">
       {/* Page Header */}
       <div className="page-header">
         <div className="flex items-center gap-4">
@@ -184,14 +185,11 @@ const VentasFromPage = () => {
               </div>
             )}
 
-            <select
-              className="input-field mb-6"
-              onChange={handleSelectChange}
-            >
+            <select className="input-field mb-6" onChange={handleSelectChange}>
               <option value="">Selecciona un producto</option>
               {products.map((product) => (
-                <option 
-                  key={product._id} 
+                <option
+                  key={product._id}
                   value={product._id}
                   disabled={product.stock === 0}
                 >
@@ -209,7 +207,9 @@ const VentasFromPage = () => {
                     className="p-4 bg-secondary-700/50 rounded-lg border border-secondary-600"
                   >
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-semibold text-white">{producto.nombre}</h3>
+                      <h3 className="font-semibold text-white">
+                        {producto.nombre}
+                      </h3>
                       <button
                         type="button"
                         onClick={() => handleEliminarProducto(index)}
@@ -218,7 +218,7 @@ const VentasFromPage = () => {
                         <FontAwesomeIcon icon={faTrash} />
                       </button>
                     </div>
-                    
+
                     <div className="grid grid-cols-3 gap-4">
                       <div>
                         <label className="label">Cantidad</label>
@@ -227,7 +227,10 @@ const VentasFromPage = () => {
                             type="button"
                             onClick={() => {
                               const updated = [...productosVenta];
-                              updated[index].cantidad = Math.max(updated[index].cantidad - 1, 1);
+                              updated[index].cantidad = Math.max(
+                                updated[index].cantidad - 1,
+                                1,
+                              );
                               setProductosVenta(updated);
                             }}
                             className="p-2 bg-secondary-600 rounded-lg hover:bg-secondary-500"
@@ -246,7 +249,10 @@ const VentasFromPage = () => {
                             type="button"
                             onClick={() => {
                               const updated = [...productosVenta];
-                              updated[index].cantidad = Math.min(updated[index].cantidad + 1, producto.stock);
+                              updated[index].cantidad = Math.min(
+                                updated[index].cantidad + 1,
+                                producto.stock,
+                              );
                               setProductosVenta(updated);
                             }}
                             className="p-2 bg-secondary-600 rounded-lg hover:bg-secondary-500"
@@ -255,7 +261,7 @@ const VentasFromPage = () => {
                           </button>
                         </div>
                       </div>
-                      
+
                       <div>
                         <label className="label">Precio Unitario</label>
                         <input
@@ -266,11 +272,13 @@ const VentasFromPage = () => {
                           step="0.01"
                         />
                       </div>
-                      
+
                       <div>
                         <label className="label">Subtotal</label>
                         <p className="text-lg font-semibold text-white">
-                          {formatCurrency(producto.precioVenta * producto.cantidad)}
+                          {formatCurrency(
+                            producto.precioVenta * producto.cantidad,
+                          )}
                         </p>
                       </div>
                     </div>
@@ -305,8 +313,8 @@ const VentasFromPage = () => {
                       {formatCurrency(
                         productosVenta.reduce(
                           (acc, p) => acc + p.precioVenta * p.cantidad,
-                          0
-                        )
+                          0,
+                        ),
                       )}
                     </span>
                   </div>
@@ -320,7 +328,9 @@ const VentasFromPage = () => {
                       >
                         <FontAwesomeIcon icon={faMinus} />
                       </button>
-                      <span className="text-white font-medium">{descuento}%</span>
+                      <span className="text-white font-medium">
+                        {descuento}%
+                      </span>
                       <button
                         type="button"
                         onClick={handleAumentarPorcentaje}
@@ -334,7 +344,9 @@ const VentasFromPage = () => {
 
                 <div className="border-t border-secondary-700 pt-4 mb-6">
                   <div className="flex justify-between items-center">
-                    <span className="text-lg font-semibold text-white">Total</span>
+                    <span className="text-lg font-semibold text-white">
+                      Total
+                    </span>
                     <span className="text-2xl font-bold text-emerald-400">
                       {formatCurrency(totalConDescuento)}
                     </span>
@@ -346,7 +358,10 @@ const VentasFromPage = () => {
                     <label className="label">Cliente</label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <FontAwesomeIcon icon={faUser} className="text-gray-400" />
+                        <FontAwesomeIcon
+                          icon={faUser}
+                          className="text-gray-400"
+                        />
                       </div>
                       <input
                         type="text"
@@ -357,14 +372,14 @@ const VentasFromPage = () => {
                     </div>
                   </div>
 
-                  <button
+                  <Button
                     type="submit"
-                    className="btn-primary w-full py-3"
+                    className="w-full py-3"
                     disabled={productosVenta.length === 0}
                   >
                     <FontAwesomeIcon icon={faShoppingCart} className="mr-2" />
                     Confirmar Venta
-                  </button>
+                  </Button>
                 </form>
               </>
             )}
@@ -374,5 +389,3 @@ const VentasFromPage = () => {
     </div>
   );
 };
-
-export default VentasFromPage;

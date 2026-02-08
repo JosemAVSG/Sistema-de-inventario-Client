@@ -9,8 +9,9 @@ import {
 import { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserTie, faMapMarkerAlt, faPhone, faEnvelope, faSave, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { Button } from "@/components/atoms/Button";
 
-const ProveedorFormPage = () => {
+export const ProveedorFormPage = () => {
   const { register, handleSubmit, setValue } = useForm();
   const dispatch = useDispatch();
   const navigation = useNavigate();
@@ -46,7 +47,7 @@ const ProveedorFormPage = () => {
   const isEditing = params.id !== "new";
 
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in flex flex-col gap-4">
       {/* Page Header */}
       <div className="page-header">
         <div className="flex items-center gap-4">
@@ -106,7 +107,10 @@ const ProveedorFormPage = () => {
               <label className="label">Dirección</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <FontAwesomeIcon icon={faMapMarkerAlt} className="text-gray-400" />
+                  <FontAwesomeIcon
+                    icon={faMapMarkerAlt}
+                    className="text-gray-400"
+                  />
                 </div>
                 <input
                   type="text"
@@ -137,7 +141,10 @@ const ProveedorFormPage = () => {
                 <label className="label">Correo Electrónico</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <FontAwesomeIcon icon={faEnvelope} className="text-gray-400" />
+                    <FontAwesomeIcon
+                      icon={faEnvelope}
+                      className="text-gray-400"
+                    />
                   </div>
                   <input
                     type="email"
@@ -151,16 +158,13 @@ const ProveedorFormPage = () => {
 
             {/* Buttons */}
             <div className="flex justify-end gap-4 pt-4 border-t border-secondary-700">
-              <Link
-                to="/proveedor"
-                className="btn-secondary"
-              >
+              <Link to="/proveedor" className="btn-secondary">
                 Cancelar
               </Link>
-              <button type="submit" className="btn-primary">
+              <Button type="submit">
                 <FontAwesomeIcon icon={faSave} className="mr-2" />
                 {isEditing ? "Guardar Cambios" : "Crear Proveedor"}
-              </button>
+              </Button>
             </div>
           </form>
         </div>
@@ -168,5 +172,3 @@ const ProveedorFormPage = () => {
     </div>
   );
 };
-
-export default ProveedorFormPage;

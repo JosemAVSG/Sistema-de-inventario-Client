@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ProtectedRoutes from "@/ProtectedRoutes";
 import Navbar from "@/components/organisms/Navbar";
-import { publicRoutes, protectedRoutes } from "@/routes";
+import ProtectedRoutes from "./routes/ProtectedRoutes";
+import { protectedRoutes, publicRoutes } from "./routes/routes";
 
 function App() {
   return (

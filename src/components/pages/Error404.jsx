@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { Button } from "@/components/atoms/Button";
 
-const Error404 = () => {
+export const Error404 = () => {
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-secondary-900 via-secondary-800 to-secondary-900">
       {/* Background decoration */}
@@ -35,13 +36,14 @@ const Error404 = () => {
             <FontAwesomeIcon icon={faHome} />
             Ir al Dashboard
           </Link>
-          <button
+          <Button
             onClick={() => window.history.back()}
-            className="btn-secondary inline-flex items-center gap-2"
+            variant="secondary"
+            className="inline-flex items-center gap-2"
           >
             <FontAwesomeIcon icon={faArrowLeft} />
             Volver Atrás
-          </button>
+          </Button>
         </div>
 
         {/* Additional Info */}
@@ -57,5 +59,3 @@ const Error404 = () => {
     </div>
   );
 };
-
-export default Error404;

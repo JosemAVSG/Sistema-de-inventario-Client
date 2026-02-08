@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faUserTie, faEnvelope, faPhone } from "@fortawesome/free-solid-svg-icons";
 
-const ProveedorPage = () => {
+export const ProveedorPage = () => {
   const proveedors = useSelector((state) => state.proveedor.proveedors);
   const dispatch = useDispatch();
 
@@ -14,15 +14,13 @@ const ProveedorPage = () => {
   }, [dispatch]);
 
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in flex flex-col gap-4">
       {/* Page Header */}
       <div className="page-header">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="page-title">Proveedores</h1>
-            <p className="page-subtitle">
-              Gestión de proveedores y contactos
-            </p>
+            <p className="page-subtitle">Gestión de proveedores y contactos</p>
           </div>
           <Link
             to="/add-proveedor"
@@ -39,7 +37,10 @@ const ProveedorPage = () => {
         <div className="card p-4">
           <div className="flex items-center gap-4">
             <div className="p-3 bg-blue-500/20 rounded-xl">
-              <FontAwesomeIcon icon={faUserTie} className="text-blue-400 text-xl" />
+              <FontAwesomeIcon
+                icon={faUserTie}
+                className="text-blue-400 text-xl"
+              />
             </div>
             <div>
               <p className="text-sm text-gray-400">Total Proveedores</p>
@@ -55,7 +56,10 @@ const ProveedorPage = () => {
       {proveedors.length === 0 ? (
         <div className="card p-12 text-center">
           <div className="p-4 bg-secondary-700/50 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-            <FontAwesomeIcon icon={faUserTie} className="text-gray-500 text-3xl" />
+            <FontAwesomeIcon
+              icon={faUserTie}
+              className="text-gray-500 text-3xl"
+            />
           </div>
           <h3 className="text-xl font-semibold text-white mb-2">
             No hay proveedores aún
@@ -77,7 +81,10 @@ const ProveedorPage = () => {
             <div key={proveedor.id} className="card p-5 card-hover">
               <div className="flex items-start gap-4">
                 <div className="p-3 bg-blue-500/20 rounded-xl">
-                  <FontAwesomeIcon icon={faUserTie} className="text-blue-400 text-xl" />
+                  <FontAwesomeIcon
+                    icon={faUserTie}
+                    className="text-blue-400 text-xl"
+                  />
                 </div>
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-white">
@@ -86,7 +93,7 @@ const ProveedorPage = () => {
                   <p className="text-sm text-gray-400">{proveedor.empresa}</p>
                 </div>
               </div>
-              
+
               <div className="mt-4 space-y-2">
                 {proveedor.email && (
                   <div className="flex items-center gap-2 text-sm text-gray-400">
@@ -117,5 +124,3 @@ const ProveedorPage = () => {
     </div>
   );
 };
-
-export default ProveedorPage;

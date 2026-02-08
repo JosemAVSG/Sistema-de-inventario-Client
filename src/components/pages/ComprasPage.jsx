@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faHandshake } from "@fortawesome/free-solid-svg-icons";
 
-const ComprasPage = () => {
+export const ComprasPage = () => {
   const compras = useSelector((state) => state.transacciones.compras);
   const cierreDiarioRealizado = useSelector(
     (state) => state.transacciones.cierreDiarioRealizado
@@ -30,15 +30,13 @@ const ComprasPage = () => {
   };
 
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in flex flex-col gap-4">
       {/* Page Header */}
       <div className="page-header">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="page-title">Compras</h1>
-            <p className="page-subtitle">
-              Historial de compras a proveedores
-            </p>
+            <p className="page-subtitle">Historial de compras a proveedores</p>
           </div>
           <Link
             to="/add-compras"
@@ -55,20 +53,24 @@ const ComprasPage = () => {
         <div className="card p-4">
           <div className="flex items-center gap-4">
             <div className="p-3 bg-amber-500/20 rounded-xl">
-              <FontAwesomeIcon icon={faHandshake} className="text-amber-400 text-xl" />
+              <FontAwesomeIcon
+                icon={faHandshake}
+                className="text-amber-400 text-xl"
+              />
             </div>
             <div>
               <p className="text-sm text-gray-400">Total Compras</p>
-              <p className="text-2xl font-bold text-white">
-                {compras.length}
-              </p>
+              <p className="text-2xl font-bold text-white">{compras.length}</p>
             </div>
           </div>
         </div>
         <div className="card p-4">
           <div className="flex items-center gap-4">
             <div className="p-3 bg-blue-500/20 rounded-xl">
-              <FontAwesomeIcon icon={faHandshake} className="text-blue-400 text-xl" />
+              <FontAwesomeIcon
+                icon={faHandshake}
+                className="text-blue-400 text-xl"
+              />
             </div>
             <div>
               <p className="text-sm text-gray-400">Monto Total</p>
@@ -82,9 +84,7 @@ const ComprasPage = () => {
           <div className="flex items-center gap-4">
             <div
               className={`p-3 rounded-xl ${
-                cierreDiarioRealizado
-                  ? "bg-amber-500/20"
-                  : "bg-green-500/20"
+                cierreDiarioRealizado ? "bg-amber-500/20" : "bg-green-500/20"
               }`}
             >
               <FontAwesomeIcon
@@ -112,7 +112,10 @@ const ComprasPage = () => {
       {compras.length === 0 ? (
         <div className="card p-12 text-center">
           <div className="p-4 bg-secondary-700/50 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-            <FontAwesomeIcon icon={faHandshake} className="text-gray-500 text-3xl" />
+            <FontAwesomeIcon
+              icon={faHandshake}
+              className="text-gray-500 text-3xl"
+            />
           </div>
           <h3 className="text-xl font-semibold text-white mb-2">
             No hay compras aún
@@ -135,10 +138,16 @@ const ComprasPage = () => {
               <thead className="bg-secondary-700">
                 <tr>
                   <th className="table-header px-4 py-3 text-left">Fecha</th>
-                  <th className="table-header px-4 py-3 text-left">Proveedor</th>
+                  <th className="table-header px-4 py-3 text-left">
+                    Proveedor
+                  </th>
                   <th className="table-header px-4 py-3 text-left">Producto</th>
-                  <th className="table-header px-4 py-3 text-center">Cantidad</th>
-                  <th className="table-header px-4 py-3 text-right">Precio Unitario</th>
+                  <th className="table-header px-4 py-3 text-center">
+                    Cantidad
+                  </th>
+                  <th className="table-header px-4 py-3 text-right">
+                    Precio Unitario
+                  </th>
                   <th className="table-header px-4 py-3 text-right">Total</th>
                 </tr>
               </thead>
@@ -164,7 +173,9 @@ const ComprasPage = () => {
                       {formatCurrency(compra.precioUnitario || 0)}
                     </td>
                     <td className="table-cell text-right font-semibold">
-                      {formatCurrency((compra.precioUnitario || 0) * (compra.cantidad || 1))}
+                      {formatCurrency(
+                        (compra.precioUnitario || 0) * (compra.cantidad || 1),
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -176,5 +187,3 @@ const ComprasPage = () => {
     </div>
   );
 };
-
-export default ComprasPage;

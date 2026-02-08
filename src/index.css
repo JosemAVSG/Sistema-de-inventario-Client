@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
 
 @theme {
@@ -29,10 +29,12 @@
   --color-accent-danger: #ef4444;
   --color-accent-info: #3b82f6;
 
-  --font-family-sans: 'Inter', system-ui, sans-serif;
+  --font-family-sans: "Inter", system-ui, sans-serif;
 
-  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-  --shadow-card-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --shadow-card:
+    0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --shadow-card-hover:
+    0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
 
   --animate-fade-in: fadeIn 0.3s ease-in-out;
   --animate-slide-in: slideIn 0.3s ease-out;
@@ -154,10 +156,7 @@ body {
   border-radius: 0.75rem;
   box-shadow: var(--shadow-card);
   overflow: hidden;
-}
-
-.card-no-padding {
-  padding: 0;
+  padding: 24px;
 }
 
 .card-hover {

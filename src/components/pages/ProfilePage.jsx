@@ -12,8 +12,9 @@ import {
 import { useDispatch } from "react-redux";
 import { logoutUser } from "@/redux/actions";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/atoms/Button";
 
-const ProfilePage = () => {
+export const ProfilePage = () => {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -94,17 +95,18 @@ const ProfilePage = () => {
           </div>
 
           <div className="flex gap-4 mt-8 pt-6 border-t border-secondary-700">
-            <button className="btn-primary flex-1">
+            <Button className="flex-1">
               <FontAwesomeIcon icon={faEdit} className="mr-2" />
               Editar Perfil
-            </button>
-            <button 
+            </Button>
+            <Button 
               onClick={handleLogout}
-              className="btn-danger flex-1"
+              variant="danger"
+              className="flex-1"
             >
               <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
               Cerrar Sesión
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -134,5 +136,3 @@ const ProfilePage = () => {
     </div>
   );
 };
-
-export default ProfilePage;

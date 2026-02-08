@@ -15,9 +15,9 @@ const ProtectedRoutes = () => {
   if (!loading && !isAuthenticated) return <Navigate to={"/login"} replace />;
 
   return (
-    <div className="flex gap-10">
+    <div className="flex w-full gap-10">
       <Sidebar></Sidebar>
-      <div className="w-full">
+      <div className="w-full !mr-10">
         <Outlet />
       </div>
     </div>

@@ -14,8 +14,9 @@ import { useEffect, useMemo } from "react";
 import { getproducts } from "@/redux/actionProducts";
 import { Link } from "react-router-dom";
 import LastSalesTable from "@/components/organisms/LastSell";
+import { Card } from "../atoms/Card";
 
-const HomePage = () => {
+export const HomePage = () => {
   const startDate = "2023-12-01";
   const endDate = "2023-12-31";
 
@@ -54,12 +55,12 @@ const HomePage = () => {
 
   const sumaPrecios = ventas.reduce(
     (total, venta) => total + venta.precioTotal,
-    0
+    0,
   );
 
   const costos = ventas.map((venta) => {
     const preciosProductos = venta.productos.map(
-      (producto) => producto.producto?.precio
+      (producto) => producto.producto?.precio,
     );
     return preciosProductos;
   });
@@ -68,15 +69,14 @@ const HomePage = () => {
     const precioDefinido = precioProducto;
     return total + precioDefinido;
   }, 0);
-  
+
   const margenGanancia = sumaPrecios - sumaTotalCostos;
 
   const gastos = buyWithinRange.reduce(
     (total, compra) => total + compra.precioUnitario,
-    0
+    0,
   );
 
-  // Stat cards data
   const stats = [
     {
       title: "Total Ingresos",
@@ -117,7 +117,7 @@ const HomePage = () => {
   ];
 
   return (
-    <div className="animate-fade-in space-y-6">
+    <div className="animate-fade-in flex flex-col gap-4 pr-10">
       {/* Page Header */}
       <div className="page-header">
         <h1 className="page-title">Dashboard</h1>
@@ -129,10 +129,7 @@ const HomePage = () => {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {stats.map((stat, index) => (
-          <div
-            key={index}
-            className="stat-card group cursor-pointer"
-          >
+          <div key={index} className="stat-card group cursor-pointer">
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-sm text-gray-400 mb-1">{stat.title}</p>
@@ -145,14 +142,17 @@ const HomePage = () => {
                       stat.changeType === "positive"
                         ? "bg-emerald-500/20 text-emerald-400"
                         : stat.changeType === "negative"
-                        ? "bg-red-500/20 text-red-400"
-                        : "bg-amber-500/20 text-amber-400"
+                          ? "bg-red-500/20 text-red-400"
+                          : "bg-amber-500/20 text-amber-400"
                     }`}
                   >
                     {stat.changeType === "positive" ? (
                       <FontAwesomeIcon icon={faArrowTrendUp} className="mr-1" />
                     ) : stat.changeType === "negative" ? (
-                      <FontAwesomeIcon icon={faArrowTrendDown} className="mr-1" />
+                      <FontAwesomeIcon
+                        icon={faArrowTrendDown}
+                        className="mr-1"
+                      />
                     ) : null}
                     {stat.change}
                   </span>
@@ -172,10 +172,7 @@ const HomePage = () => {
               className="flex items-center mt-4 text-sm text-primary-400 hover:text-primary-300 transition-colors"
             >
               Ver detalles
-              <FontAwesomeIcon
-                icon={faArrowAltCircleRight}
-                className="ml-2"
-              />
+              <FontAwesomeIcon icon={faArrowAltCircleRight} className="ml-2" />
             </Link>
           </div>
         ))}
@@ -184,7 +181,7 @@ const HomePage = () => {
       {/* Charts and Tables */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Chart */}
-        <div className="lg:col-span-2 card p-6 card-hover">
+        <Card className="lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-white">
               Análisis de Ventas
@@ -198,14 +195,12 @@ const HomePage = () => {
           <div className="chart-container">
             <ChartComponent />
           </div>
-        </div>
+        </Card>
 
         {/* Recent Sales */}
-        <div className="card p-6 card-hover">
+        <Card className="p-6 card-hover">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-white">
-              Últimas Ventas
-            </h2>
+            <h2 className="text-lg font-semibold text-white">Últimas Ventas</h2>
             <Link
               to="/ventas"
               className="text-sm text-primary-400 hover:text-primary-300 transition-colors"
@@ -214,13 +209,13 @@ const HomePage = () => {
             </Link>
           </div>
           <LastSalesTable />
-        </div>
+        </Card>
       </div>
 
       {/* Additional Info Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
         {/* Ganancia Margin */}
-        <div className="card p-6 card-hover">
+        <Card className="p-6 card-hover">
           <h2 className="text-lg font-semibold text-white mb-4">
             Margen de Ganancia
           </h2>
@@ -250,10 +245,10 @@ const HomePage = () => {
               </div>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Quick Actions */}
-        <div className="card p-6 card-hover">
+        <Card className="p-6 card-hover">
           <h2 className="text-lg font-semibold text-white mb-4">
             Acciones Rápidas
           </h2>
@@ -281,13 +276,14 @@ const HomePage = () => {
               className="flex items-center gap-4 p-4 bg-secondary-700/50 rounded-lg hover:bg-secondary-700 transition-colors group"
             >
               <div className="p-2 bg-emerald-500/20 rounded-lg group-hover:bg-emerald-500/30 transition-colors">
-                <FontAwesomeIcon icon={faDollarSign} className="text-emerald-400" />
+                <FontAwesomeIcon
+                  icon={faDollarSign}
+                  className="text-emerald-400"
+                />
               </div>
               <div className="flex-1">
                 <p className="font-medium text-white">Nueva Venta</p>
-                <p className="text-sm text-gray-400">
-                  Registrar nueva venta
-                </p>
+                <p className="text-sm text-gray-400">Registrar nueva venta</p>
               </div>
               <FontAwesomeIcon
                 icon={faArrowAltCircleRight}
@@ -313,10 +309,8 @@ const HomePage = () => {
               />
             </Link>
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );
 };
-
-export default HomePage;

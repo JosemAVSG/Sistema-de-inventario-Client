@@ -19,6 +19,68 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import clsx from "clsx";
 
+// Componentes modulares para los items
+const MenuItem = ({ itemData, collapsed }) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div>
+      <NavLink
+        to={itemData.path}
+        end={!itemData.children}
+        className={({ isActive }) =>
+          clsx(
+            "flex items-center gap-3 !px-1 !py-2.5 rounded-xl transition-all duration-200",
+            collapsed && "justify-center",
+            isActive && !itemData.children
+              ? "bg-primary-600/20 text-primary-400 border-l-2 border-primary-500"
+              : "text-gray-400 hover:bg-secondary-700 hover:text-white hover:translate-x-1",
+          )
+        }
+        onClick={() => itemData.children && setOpen(!open)}
+      >
+        <FontAwesomeIcon icon={itemData.icon} className="w-6 h-6" />
+        {!collapsed && (
+          <>
+            <span className="font-medium">{itemData.label}</span>
+            {itemData.children && (
+              <FontAwesomeIcon
+                icon={faChevronRight}
+                className={clsx(
+                  "ml-auto text-xs opacity-60 transition-transform",
+                  open && "rotate-90",
+                )}
+              />
+            )}
+          </>
+        )}
+      </NavLink>
+
+      {!collapsed && itemData.children && open && (
+        <div className="!ml-2 flex flex-col !mt-1">
+          {itemData.children.map((child, i) => (
+            <NavLink
+              key={i}
+              to={child.path}
+              className={({ isActive }) =>
+                clsx(
+                  "flex items-center gap-2 !px-2 !py-2 rounded-md text-sm transition-all duration-200",
+                  isActive
+                    ? "bg-primary-600/10 text-primary-400"
+                    : "text-gray-500 hover:bg-secondary-700/50 hover:text-white",
+                )
+              }
+            >
+              <FontAwesomeIcon icon={child.icon} className="w-5 h-5" />
+              <span>{child.label}</span>
+            </NavLink>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const Sidebar = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
@@ -29,7 +91,6 @@ const Sidebar = () => {
 
   const menuItems = [
     { path: "/home", label: "Dashboard", icon: faDashboard },
-
     {
       path: "/products",
       label: "Productos",
@@ -81,15 +142,9 @@ const Sidebar = () => {
     },
   ];
 
-  const item =
-    "flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-200";
-  const subItem =
-    "flex items-center gap-2 px-4 py-2 rounded-md text-sm transition-all duration-200";
-  const quickItem =
-    "flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all duration-200";
-
   return (
     <>
+      {/* Botón mobile */}
       {!isMobileOpen && (
         <button
           onClick={() => setIsMobileOpen(true)}
@@ -114,7 +169,7 @@ const Sidebar = () => {
           <FontAwesomeIcon icon={collapsed ? faBars : faX} />
         </button>
 
-        {/* Collapsed logo */}
+        {/* Logo colapsado */}
         {collapsed && (
           <div className="py-6 flex justify-center border-b border-secondary-700">
             <div className="w-12 h-12 bg-primary-600 rounded-lg flex items-center justify-center text-white">
@@ -123,68 +178,15 @@ const Sidebar = () => {
           </div>
         )}
 
-        <nav className="py-6 px-3 space-y-6 overflow-y-auto h-full">
+        <nav className="py-6 px-3 flex flex-col gap-2 overflow-y-auto h-full">
           {!collapsed && (
-            <p className="px-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            <p className="!px-2  text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Menú principal
             </p>
           )}
 
-          {menuItems.map((itemData, index) => (
-            <div key={index} className="space-y-2">
-              {index !== 0 && (
-                <div className="my-3 border-t border-secondary-700/60" />
-              )}
-
-              <NavLink
-                to={itemData.path}
-                end={!itemData.children}
-                className={({ isActive }) =>
-                  clsx(
-                    item,
-                    collapsed && "justify-center",
-                    isActive && !itemData.children
-                      ? "bg-primary-600/20 text-primary-400 border-l-2 border-primary-500"
-                      : "text-gray-400 hover:bg-secondary-700 hover:text-white hover:translate-x-1",
-                  )
-                }
-              >
-                <FontAwesomeIcon icon={itemData.icon} className="w-6 h-6" />
-                {!collapsed && (
-                  <>
-                    <span className="font-medium">{itemData.label}</span>
-                    {itemData.children && (
-                      <FontAwesomeIcon
-                        icon={faChevronRight}
-                        className="ml-auto text-xs opacity-60"
-                      />
-                    )}
-                  </>
-                )}
-              </NavLink>
-
-              {!collapsed && itemData.children && (
-                <div className="ml-6 mt-2 space-y-1">
-                  {itemData.children.map((child, i) => (
-                    <NavLink
-                      key={i}
-                      to={child.path}
-                      className={({ isActive }) =>
-                        clsx(
-                          subItem,
-                          isActive
-                            ? "bg-primary-600/10 text-primary-400"
-                            : "text-gray-500 hover:bg-secondary-700/50 hover:text-white",
-                        )
-                      }
-                    >
-                      <FontAwesomeIcon icon={child.icon} className="w-5 h-5" />
-                      <span>{child.label}</span>
-                    </NavLink>
-                  ))}
-                </div>
-              )}
-            </div>
+          {menuItems.map((itemData, idx) => (
+            <MenuItem key={idx} itemData={itemData} collapsed={collapsed} />
           ))}
 
           {!collapsed && (
@@ -197,7 +199,7 @@ const Sidebar = () => {
                 to="/add-products"
                 className={({ isActive }) =>
                   clsx(
-                    quickItem,
+                    "flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all duration-200",
                     isActive
                       ? "bg-primary-600/20 text-primary-400"
                       : "text-gray-400 hover:bg-secondary-700 hover:text-white",
@@ -213,7 +215,7 @@ const Sidebar = () => {
                 onClick={(e) => cierreDiarioRealizado && e.preventDefault()}
                 className={({ isActive }) =>
                   clsx(
-                    quickItem,
+                    "flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all duration-200",
                     cierreDiarioRealizado && "opacity-50 cursor-not-allowed",
                     isActive
                       ? "bg-primary-600/20 text-primary-400"
@@ -229,6 +231,7 @@ const Sidebar = () => {
         </nav>
       </aside>
 
+      {/* Overlay mobile */}
       {isMobileOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-30 lg:hidden"

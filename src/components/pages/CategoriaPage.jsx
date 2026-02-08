@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faTags } from "@fortawesome/free-solid-svg-icons";
 
-const CategoriaPage = () => {
+export const CategoriaPage = () => {
   const categories = useSelector((state) => state.category.categories);
   const dispatch = useDispatch();
 
@@ -14,7 +14,7 @@ const CategoriaPage = () => {
   }, [dispatch]);
 
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in flex flex-col gap-4">
       {/* Page Header */}
       <div className="page-header">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -95,5 +95,3 @@ const CategoriaPage = () => {
     </div>
   );
 };
-
-export default CategoriaPage;

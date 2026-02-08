@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faBox } from "@fortawesome/free-solid-svg-icons";
 
-const ProductsPage = () => {
+export const ProductsPage = () => {
   const products = useSelector((state) => state.product.products);
   const dispatch = useDispatch();
 
@@ -15,15 +15,13 @@ const ProductsPage = () => {
   }, [dispatch]);
 
   return (
-    <div className="animate-fade-in space-y-6">
+    <div className="animate-fade-in flex flex-col gap-4">
       {/* Page Header */}
       <div className="page-header">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="page-title">Productos</h1>
-            <p className="page-subtitle">
-              Gestiona tu inventario de productos
-            </p>
+            <p className="page-subtitle">Gestiona tu inventario de productos</p>
           </div>
           <Link
             to="/add-products"
@@ -44,9 +42,7 @@ const ProductsPage = () => {
             </div>
             <div>
               <p className="text-sm text-gray-400">Total Productos</p>
-              <p className="text-2xl font-bold text-white">
-                {products.length}
-              </p>
+              <p className="text-2xl font-bold text-white">{products.length}</p>
             </div>
           </div>
         </div>
@@ -85,10 +81,7 @@ const ProductsPage = () => {
       {products.length === 0 ? (
         <div className="card p-12 text-center">
           <div className="p-4 bg-secondary-700/50 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-            <FontAwesomeIcon
-              icon={faBox}
-              className="text-gray-500 text-3xl"
-            />
+            <FontAwesomeIcon icon={faBox} className="text-gray-500 text-3xl" />
           </div>
           <h3 className="text-xl font-semibold text-white mb-2">
             No hay productos aún
@@ -96,7 +89,10 @@ const ProductsPage = () => {
           <p className="text-gray-400 mb-6">
             Comienza agregando tu primer producto al inventario
           </p>
-          <Link to="/add-products" className="btn-primary inline-flex items-center gap-2">
+          <Link
+            to="/add-products"
+            className="btn-primary inline-flex items-center gap-2"
+          >
             <FontAwesomeIcon icon={faPlus} />
             Agregar Producto
           </Link>
@@ -109,5 +105,3 @@ const ProductsPage = () => {
     </div>
   );
 };
-
-export default ProductsPage;

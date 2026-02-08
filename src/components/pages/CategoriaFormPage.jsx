@@ -5,8 +5,9 @@ import { addCategory, editCategory, getCategory } from '@/redux/actionCategories
 import { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTags, faSave, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { Button } from "@/components/atoms/Button";
 
-const CategoriaFormPage = () => {
+export const CategoriaFormPage = () => {
   const { register, handleSubmit, setValue } = useForm();
   const dispatch = useDispatch();
   const navigation = useNavigate();
@@ -102,10 +103,10 @@ const CategoriaFormPage = () => {
               >
                 Cancelar
               </Link>
-              <button type="submit" className="btn-primary">
+              <Button type="submit">
                 <FontAwesomeIcon icon={faSave} className="mr-2" />
                 {isEditing ? "Guardar Cambios" : "Crear Categoría"}
-              </button>
+              </Button>
             </div>
           </form>
         </div>
@@ -113,5 +114,3 @@ const CategoriaFormPage = () => {
     </div>
   );
 };
-
-export default CategoriaFormPage;

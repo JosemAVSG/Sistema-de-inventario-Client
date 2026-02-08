@@ -15,8 +15,9 @@ import {
   faUserTie,
   faBox
 } from "@fortawesome/free-solid-svg-icons";
+import { Button } from "@/components/atoms/Button";
 
-const ComprasFromPage = () => {
+export const ComprasFromPage = () => {
   const { register, handleSubmit } = useForm();
   const dispatch = useDispatch();
   const navigation = useNavigate();
@@ -115,7 +116,7 @@ const ComprasFromPage = () => {
   };
 
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in flex flex-col gap-4">
       {/* Page Header */}
       <div className="page-header">
         <div className="flex items-center gap-4">
@@ -142,10 +143,7 @@ const ComprasFromPage = () => {
               Seleccionar Productos
             </h2>
 
-            <select
-              className="input-field mb-6"
-              onChange={handleSelectChange}
-            >
+            <select className="input-field mb-6" onChange={handleSelectChange}>
               <option value="">Selecciona un producto</option>
               {products.map((product) => (
                 <option key={product._id} value={product._id}>
@@ -165,9 +163,14 @@ const ComprasFromPage = () => {
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
                         <div className="p-2 bg-blue-500/20 rounded-lg">
-                          <FontAwesomeIcon icon={faBox} className="text-blue-400" />
+                          <FontAwesomeIcon
+                            icon={faBox}
+                            className="text-blue-400"
+                          />
                         </div>
-                        <h3 className="font-semibold text-white">{producto.nombre}</h3>
+                        <h3 className="font-semibold text-white">
+                          {producto.nombre}
+                        </h3>
                       </div>
                       <button
                         type="button"
@@ -177,7 +180,7 @@ const ComprasFromPage = () => {
                         <FontAwesomeIcon icon={faTrash} />
                       </button>
                     </div>
-                    
+
                     <div className="grid grid-cols-3 gap-4">
                       <div>
                         <label className="label">Cantidad</label>
@@ -186,7 +189,10 @@ const ComprasFromPage = () => {
                             type="button"
                             onClick={() => {
                               const updated = [...productosCompra];
-                              updated[index].cantidad = Math.max(updated[index].cantidad - 1, 1);
+                              updated[index].cantidad = Math.max(
+                                updated[index].cantidad - 1,
+                                1,
+                              );
                               setproductosCompra(updated);
                             }}
                             className="p-2 bg-secondary-600 rounded-lg hover:bg-secondary-500"
@@ -204,7 +210,8 @@ const ComprasFromPage = () => {
                             type="button"
                             onClick={() => {
                               const updated = [...productosCompra];
-                              updated[index].cantidad = updated[index].cantidad + 1;
+                              updated[index].cantidad =
+                                updated[index].cantidad + 1;
                               setproductosCompra(updated);
                             }}
                             className="p-2 bg-secondary-600 rounded-lg hover:bg-secondary-500"
@@ -213,7 +220,7 @@ const ComprasFromPage = () => {
                           </button>
                         </div>
                       </div>
-                      
+
                       <div>
                         <label className="label">Precio Unitario</label>
                         <input
@@ -224,11 +231,13 @@ const ComprasFromPage = () => {
                           step="0.01"
                         />
                       </div>
-                      
+
                       <div>
                         <label className="label">Subtotal</label>
                         <p className="text-lg font-semibold text-white">
-                          {formatCurrency(producto.precioUnitario * producto.cantidad)}
+                          {formatCurrency(
+                            producto.precioUnitario * producto.cantidad,
+                          )}
                         </p>
                       </div>
                     </div>
@@ -267,7 +276,9 @@ const ComprasFromPage = () => {
 
                 <div className="border-t border-secondary-700 pt-4 mb-6">
                   <div className="flex justify-between items-center">
-                    <span className="text-lg font-semibold text-white">Total</span>
+                    <span className="text-lg font-semibold text-white">
+                      Total
+                    </span>
                     <span className="text-2xl font-bold text-blue-400">
                       {formatCurrency(total)}
                     </span>
@@ -279,7 +290,10 @@ const ComprasFromPage = () => {
                     <label className="label">Proveedor</label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <FontAwesomeIcon icon={faUserTie} className="text-gray-400" />
+                        <FontAwesomeIcon
+                          icon={faUserTie}
+                          className="text-gray-400"
+                        />
                       </div>
                       <select
                         {...register("proveedor", { required: true })}
@@ -295,14 +309,14 @@ const ComprasFromPage = () => {
                     </div>
                   </div>
 
-                  <button
+                  <Button
                     type="submit"
-                    className="btn-primary w-full py-3"
+                    className="w-full !py-3"
                     disabled={productosCompra.length === 0}
                   >
                     <FontAwesomeIcon icon={faShoppingBag} className="mr-2" />
                     Confirmar Compra
-                  </button>
+                  </Button>
                 </form>
               </>
             )}
@@ -312,5 +326,3 @@ const ComprasFromPage = () => {
     </div>
   );
 };
-
-export default ComprasFromPage;

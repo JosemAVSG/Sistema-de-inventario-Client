@@ -5,8 +5,9 @@ import { useNavigate, Link } from "react-router-dom";
 import { signupUser } from "@/redux/actions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faEnvelope, faLock, faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import { Button } from "@/components/atoms/Button";
 
-const RegisterPage = () => {
+export const RegisterPage = () => {
   const {
     register,
     handleSubmit,
@@ -113,10 +114,10 @@ const RegisterPage = () => {
               )}
             </div>
 
-            <button type="submit" className="btn-primary w-full py-3">
+            <Button type="submit" className="w-full py-3">
               <FontAwesomeIcon icon={faUserPlus} className="mr-2" />
               Crear Cuenta
-            </button>
+            </Button>
           </form>
 
           <div className="mt-6 text-center">
@@ -140,5 +141,3 @@ const RegisterPage = () => {
     </div>
   );
 };
-
-export default RegisterPage;
