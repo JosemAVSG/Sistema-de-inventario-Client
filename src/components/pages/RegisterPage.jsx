@@ -45,9 +45,9 @@ export const RegisterPage = () => {
         </div>
 
         {/* Register Card */}
-        <div className="card p-8">
+        <div className="p-8">
           {registerError.length > 0 && (
-            <div className="mb-6 space-y-2">
+            <div className="mb-6">
               {registerError.map((error, i) => (
                 <div
                   key={i}
@@ -59,7 +59,7 @@ export const RegisterPage = () => {
             </div>
           )}
 
-          <form onSubmit={submiting} className="space-y-5">
+          <form onSubmit={submiting} className="flex flex-col gap-4">
             <div>
               <label className="label">Nombre de Usuario</label>
               <div className="relative">
