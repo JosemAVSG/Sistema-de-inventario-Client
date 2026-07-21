@@ -82,9 +82,9 @@ export const ProductsPage = () => {
               />
             </div>
             <div>
-              <p className="text-sm text-gray-400">En Stock</p>
+              <p className="text-sm text-gray-400">Unidades en Stock</p>
               <p className="text-2xl font-bold text-white">
-                {products.filter((p) => p.stock >= 2).length}
+                {products.reduce((sum, p) => sum + (Number(p.stock) || 0), 0)}
               </p>
             </div>
           </div>
@@ -95,7 +95,7 @@ export const ProductsPage = () => {
               <FontAwesomeIcon icon={faBox} className="text-red-400 text-xl" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Stock Bajo</p>
+              <p className="text-sm text-gray-400">Productos con Stock Bajo</p>
               <p className="text-2xl font-bold text-white">
                 {products.filter((p) => p.stock < 2).length}
               </p>
