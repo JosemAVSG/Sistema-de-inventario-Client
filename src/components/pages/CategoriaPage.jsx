@@ -76,7 +76,7 @@ export const CategoriaPage = () => {
                   </div>
                 </div>
                 <h3 className="text-lg font-semibold text-white mt-4">
-                  {category.nombre}
+                  {category.name || category.nombre}
                 </h3>
                 <p className="text-sm text-gray-400 mt-1 line-clamp-2">
                   {category.descripcion || "Sin descripción"}
