@@ -1,241 +1,247 @@
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBars,
-  faCubes,
   faDashboard,
+  faBox,
+  faTags,
+  faUsers,
   faHandshake,
   faMoneyBill1Wave,
-  faTags,
-  faUserTie,
-  faX,
-  faBox,
-  faArrowTrendUp,
-  faUsers,
-  faClipboardList,
+  faChevronLeft,
   faChevronRight,
+  faSignOutAlt,
+  faUser,
+  faChartLine,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { logoutUser } from "@/redux/actions";
+import { cerrarDia } from "@/redux/actionTransaccion";
+import { useVentas, useCompras } from "@/hooks/useTransactions";
 import clsx from "clsx";
+import imguser from "@/img/user.svg";
 
-// Componentes modulares para los items
-const MenuItem = ({ itemData, collapsed }) => {
-  const [open, setOpen] = useState(false);
+const sections = [
+  {
+    label: "General",
+    items: [
+      { path: "/home", label: "Dashboard", icon: faDashboard },
+    ],
+  },
+  {
+    label: "Inventario",
+    items: [
+      { path: "/products", label: "Productos", icon: faBox },
+      { path: "/categoria", label: "Categorías", icon: faTags },
+    ],
+  },
+  {
+    label: "Contactos",
+    items: [
+      { path: "/proveedor", label: "Proveedores", icon: faUsers },
+    ],
+  },
+  {
+    label: "Operaciones",
+    items: [
+      { path: "/compras", label: "Compras", icon: faHandshake },
+      { path: "/ventas", label: "Ventas", icon: faMoneyBill1Wave },
+    ],
+  },
+];
 
-  return (
-    <div>
-      <NavLink
-        to={itemData.path}
-        end={!itemData.children}
-        className={({ isActive }) =>
-          clsx(
-            "flex items-center gap-3 !px-1 !py-2.5 rounded-xl transition-all duration-200",
-            collapsed && "justify-center",
-            isActive && !itemData.children
-              ? "bg-primary-600/20 text-primary-400 border-l-2 border-primary-500"
-              : "text-gray-400 hover:bg-secondary-700 hover:text-white hover:translate-x-1",
-          )
-        }
-        onClick={() => itemData.children && setOpen(!open)}
-      >
-        <FontAwesomeIcon icon={itemData.icon} className="w-6 h-6" />
-        {!collapsed && (
-          <>
-            <span className="font-medium">{itemData.label}</span>
-            {itemData.children && (
-              <FontAwesomeIcon
-                icon={faChevronRight}
-                className={clsx(
-                  "ml-auto text-xs opacity-60 transition-transform",
-                  open && "rotate-90",
-                )}
-              />
-            )}
-          </>
-        )}
-      </NavLink>
-
-      {!collapsed && itemData.children && open && (
-        <div className="!ml-2 flex flex-col !mt-1">
-          {itemData.children.map((child, i) => (
-            <NavLink
-              key={i}
-              to={child.path}
-              className={({ isActive }) =>
-                clsx(
-                  "flex items-center gap-2 !px-2 !py-2 rounded-md text-sm transition-all duration-200",
-                  isActive
-                    ? "bg-primary-600/10 text-primary-400"
-                    : "text-gray-500 hover:bg-secondary-700/50 hover:text-white",
-                )
-              }
-            >
-              <FontAwesomeIcon icon={child.icon} className="w-5 h-5" />
-              <span>{child.label}</span>
-            </NavLink>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
-
-const Sidebar = () => {
+const Sidebar = ({ collapsed, onToggle }) => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const cierreDiarioRealizado = useSelector(
-    (state) => state.transacciones.cierreDiarioRealizado,
+  const user = useSelector((state) => state.auth.user);
+  const { data: ventas = [] } = useVentas();
+  const { data: compras = [] } = useCompras();
+
+  const closeMobile = () => setIsMobileOpen(false);
+
+  const logout = () => {
+    dispatch(logoutUser());
+    navigate("/");
+  };
+
+  const handleCerrarDia = () => {
+    const fechaActual = new Date().toISOString();
+    const ventasDelDia = ventas.filter((venta) =>
+      venta.createdAt.includes(fechaActual),
+    );
+    const comprasDelDia = compras.filter((compra) =>
+      compra.createdAt.includes(fechaActual),
+    );
+    dispatch(cerrarDia(fechaActual, ventasDelDia, comprasDelDia));
+  };
+
+  const nav = (
+    <nav className="flex flex-col h-full">
+      {/* Logo */}
+      <div className={clsx(
+        "flex items-center h-16 border-b border-secondary-700",
+        collapsed ? "justify-center px-0" : "px-4",
+      )}>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-700 rounded-lg flex items-center justify-center shrink-0">
+            <FontAwesomeIcon icon={faBox} className="text-white text-sm" />
+          </div>
+          {!collapsed && (
+            <span className="font-bold text-white truncate text-base">
+              Inventario<span className="text-primary-400">Pro</span>
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Navigation */}
+      <div className="flex-1 overflow-y-auto py-4 px-3">
+        {sections.map((section, idx) => (
+          <div key={idx} className="mb-6 last:mb-0">
+            {!collapsed && (
+              <p className="px-3 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                {section.label}
+              </p>
+            )}
+            <div className="space-y-0.5">
+              {section.items.map((item) => (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                  end={item.path === "/home"}
+                  onClick={closeMobile}
+                  className={({ isActive }) =>
+                    clsx(
+                      "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200",
+                      collapsed && "justify-center px-0",
+                      isActive
+                        ? "bg-primary-600/20 text-primary-400 font-medium"
+                        : "text-gray-400 hover:bg-secondary-700 hover:text-white",
+                    )
+                  }
+                >
+                  <FontAwesomeIcon icon={item.icon} className="w-5 h-5 shrink-0" />
+                  {!collapsed && <span className="truncate">{item.label}</span>}
+                </NavLink>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Collapse */}
+      <button
+        onClick={onToggle}
+        className={clsx(
+          "flex items-center gap-3 w-full px-4 py-2.5 text-sm text-gray-500 hover:text-white hover:bg-secondary-700/50 transition-colors border-t border-secondary-700",
+          collapsed && "justify-center px-0",
+        )}
+        aria-label={collapsed ? "Expandir" : "Colapsar"}
+      >
+        <FontAwesomeIcon icon={collapsed ? faChevronRight : faChevronLeft} className="w-4 h-4" />
+        {!collapsed && <span>Colapsar menú</span>}
+      </button>
+
+      {/* User menu */}
+      <div className="border-t border-secondary-700 relative">
+        <button
+          onClick={() => setUserMenuOpen(!userMenuOpen)}
+          className={clsx(
+            "flex items-center gap-3 w-full px-4 py-3 text-sm text-gray-400 hover:text-white hover:bg-secondary-700/50 transition-colors",
+            collapsed && "justify-center px-0",
+          )}
+        >
+          <div className="w-7 h-7 rounded-full bg-secondary-700 flex items-center justify-center overflow-hidden shrink-0">
+            <img src={imguser} alt="Usuario" className="w-full h-full object-cover" />
+          </div>
+          {!collapsed && (
+            <span className="truncate">{user?.username || "Usuario"}</span>
+          )}
+        </button>
+
+        {userMenuOpen && !collapsed && (
+          <div className="absolute bottom-full left-0 right-0 mb-1 mx-2 bg-secondary-800 border border-secondary-700 rounded-xl shadow-xl py-2 overflow-hidden">
+            <div className="px-4 py-2 border-b border-secondary-700">
+              <p className="text-sm font-medium text-white">{user?.username}</p>
+              <p className="text-xs text-gray-400">{user?.email || ""}</p>
+            </div>
+            <div className="py-1">
+              <button
+                onClick={() => { setUserMenuOpen(false); navigate("/profile"); }}
+                className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-300 hover:bg-secondary-700 transition-colors"
+              >
+                <FontAwesomeIcon icon={faUser} className="w-4 h-4" />
+                Perfil
+              </button>
+              <button
+                onClick={() => { setUserMenuOpen(false); navigate("/home"); }}
+                className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-300 hover:bg-secondary-700 transition-colors"
+              >
+                <FontAwesomeIcon icon={faChartLine} className="w-4 h-4" />
+                Dashboard
+              </button>
+              <button
+                onClick={() => { setUserMenuOpen(false); handleCerrarDia(); }}
+                className="flex items-center gap-3 w-full px-4 py-2 text-sm text-amber-400 hover:bg-secondary-700 transition-colors"
+              >
+                <FontAwesomeIcon icon={faChartLine} className="w-4 h-4" />
+                Cerrar Día
+              </button>
+            </div>
+            <div className="border-t border-secondary-700 pt-1">
+              <button
+                onClick={() => { setUserMenuOpen(false); logout(); }}
+                className="flex items-center gap-3 w-full px-4 py-2 text-sm text-red-400 hover:bg-secondary-700 transition-colors"
+              >
+                <FontAwesomeIcon icon={faSignOutAlt} className="w-4 h-4" />
+                Cerrar Sesión
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </nav>
   );
-
-  const menuItems = [
-    { path: "/home", label: "Dashboard", icon: faDashboard },
-    {
-      path: "/products",
-      label: "Productos",
-      icon: faBox,
-      children: [
-        { path: "/products", label: "Lista de Productos", icon: faTags },
-        { path: "/add-products", label: "Nuevo Producto", icon: faCubes },
-      ],
-    },
-    {
-      path: "/categoria",
-      label: "Categorías",
-      icon: faClipboardList,
-      children: [
-        { path: "/categoria", label: "Lista de Categorías", icon: faTags },
-        { path: "/add-categoria", label: "Nueva Categoría", icon: faCubes },
-      ],
-    },
-    {
-      path: "/proveedor",
-      label: "Proveedores",
-      icon: faUsers,
-      children: [
-        { path: "/proveedor", label: "Lista de Proveedores", icon: faUserTie },
-        { path: "/add-proveedor", label: "Nuevo Proveedor", icon: faHandshake },
-      ],
-    },
-    {
-      path: "/ventas",
-      label: "Ventas",
-      icon: faMoneyBill1Wave,
-      children: [
-        { path: "/ventas", label: "Historial de Ventas", icon: faArrowTrendUp },
-        { path: "/add-ventas", label: "Nueva Venta", icon: faMoneyBill1Wave },
-      ],
-    },
-    {
-      path: "/compras",
-      label: "Compras",
-      icon: faHandshake,
-      children: [
-        {
-          path: "/compras",
-          label: "Historial de Compras",
-          icon: faArrowTrendUp,
-        },
-        { path: "/add-compras", label: "Nueva Compra", icon: faHandshake },
-      ],
-    },
-  ];
 
   return (
     <>
-      {/* Botón mobile */}
       {!isMobileOpen && (
         <button
           onClick={() => setIsMobileOpen(true)}
-          className="lg:hidden fixed top-20 left-4 z-50 p-3 bg-secondary-800 rounded-lg text-white shadow-lg"
+          className="lg:hidden fixed top-4 left-4 z-50 p-2.5 bg-secondary-800 rounded-lg text-white shadow-lg border border-secondary-700"
+          aria-label="Abrir menú"
         >
-          <FontAwesomeIcon icon={faBars} />
+          <FontAwesomeIcon icon={faBars} className="w-5 h-5" />
         </button>
       )}
 
       <aside
         className={clsx(
-          "fixed lg:static top-16 left-0 h-screen bg-secondary-800 border-r border-secondary-700 z-40 transition-all duration-300",
-          isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
-          collapsed ? "w-20" : "w-64",
+          "hidden lg:flex flex-col bg-secondary-800 border-r border-secondary-700 transition-all duration-300",
+          collapsed ? "w-16" : "w-64",
         )}
       >
-        {/* Collapse button */}
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="hidden lg:flex absolute -right-3 top-6 w-8 h-8 bg-primary-600 rounded-full items-center justify-center text-white shadow-lg"
-        >
-          <FontAwesomeIcon icon={collapsed ? faBars : faX} />
-        </button>
-
-        {/* Logo colapsado */}
-        {collapsed && (
-          <div className="py-6 flex justify-center border-b border-secondary-700">
-            <div className="w-12 h-12 bg-primary-600 rounded-lg flex items-center justify-center text-white">
-              <FontAwesomeIcon icon={faDashboard} />
-            </div>
-          </div>
-        )}
-
-        <nav className="py-6 px-3 flex flex-col gap-2 overflow-y-auto h-full">
-          {!collapsed && (
-            <p className="!px-2  text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Menú principal
-            </p>
-          )}
-
-          {menuItems.map((itemData, idx) => (
-            <MenuItem key={idx} itemData={itemData} collapsed={collapsed} />
-          ))}
-
-          {!collapsed && (
-            <div className="mt-10 pt-6 border-t border-secondary-600/60 space-y-3">
-              <p className="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                Acciones rápidas
-              </p>
-
-              <NavLink
-                to="/add-products"
-                className={({ isActive }) =>
-                  clsx(
-                    "flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all duration-200",
-                    isActive
-                      ? "bg-primary-600/20 text-primary-400"
-                      : "text-gray-400 hover:bg-secondary-700 hover:text-white",
-                  )
-                }
-              >
-                <FontAwesomeIcon icon={faBox} />
-                <span>Nuevo Producto</span>
-              </NavLink>
-
-              <NavLink
-                to="/add-ventas"
-                onClick={(e) => cierreDiarioRealizado && e.preventDefault()}
-                className={({ isActive }) =>
-                  clsx(
-                    "flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all duration-200",
-                    cierreDiarioRealizado && "opacity-50 cursor-not-allowed",
-                    isActive
-                      ? "bg-primary-600/20 text-primary-400"
-                      : "text-gray-400 hover:bg-secondary-700 hover:text-white",
-                  )
-                }
-              >
-                <FontAwesomeIcon icon={faMoneyBill1Wave} />
-                <span>Nueva Venta</span>
-              </NavLink>
-            </div>
-          )}
-        </nav>
+        {nav}
       </aside>
 
-      {/* Overlay mobile */}
+      <aside
+        className={clsx(
+          "lg:hidden fixed inset-y-0 left-0 z-50 w-72 bg-secondary-800 border-r border-secondary-700 shadow-2xl transition-transform duration-300",
+          isMobileOpen ? "translate-x-0" : "-translate-x-full",
+        )}
+      >
+        {nav}
+      </aside>
+
       {isMobileOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-          onClick={() => setIsMobileOpen(false)}
+          className="fixed inset-0 bg-black/60 z-40 lg:hidden"
+          onClick={closeMobile}
         />
       )}
     </>

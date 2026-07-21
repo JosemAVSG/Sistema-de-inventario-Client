@@ -1,21 +1,17 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getsells } from "@/redux/actionTransaccion";
+import { useSelector } from "react-redux";
 import DataTableSell from "@/components/organisms/DataTableSell";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMoneyBill1Wave } from "@fortawesome/free-solid-svg-icons";
+import { useVentas } from "@/hooks/useTransactions";
+import { Skeleton } from "@/components/atoms/Skeleton";
+import { EmptyState } from "@/components/molecules/EmptyState";
 
 export const VentasPage = () => {
-  const ventas = useSelector((state) => state.transacciones.ventas);
+  const { data: ventas = [], isLoading, error } = useVentas();
   const cierreDiarioRealizado = useSelector(
     (state) => state.transacciones.cierreDiarioRealizado
   );
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getsells());
-  }, [dispatch]);
 
   // Calcular totales
   const totalVentas = ventas.reduce(
@@ -114,37 +110,44 @@ export const VentasPage = () => {
         </div>
       </div>
 
+      {/* Loading */}
+      {isLoading && (
+        <>
+          <Skeleton variant="rectangular" className="h-96" />
+        </>
+      )}
+
+      {/* Error */}
+      {error && (
+        <div className="card p-8 text-center text-red-400">
+          <p>Error al cargar las ventas. Intenta de nuevo más tarde.</p>
+          <p className="text-sm text-gray-400 mt-2">{error.message}</p>
+        </div>
+      )}
+
       {/* Ventas Table */}
-      {ventas.length === 0 ? (
-        <div className="card p-12 text-center">
-          <div className="p-4 bg-secondary-700/50 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-            <FontAwesomeIcon
-              icon={faMoneyBill1Wave}
-              className="text-gray-500 text-3xl"
-            />
-          </div>
-          <h3 className="text-xl font-semibold text-white mb-2">
-            No hay ventas aún
-          </h3>
-          <p className="text-gray-400 mb-6">
-            {cierreDiarioRealizado
+      {!isLoading && !error && ventas.length === 0 ? (
+        <EmptyState
+          icon={<FontAwesomeIcon icon={faMoneyBill1Wave} className="text-4xl" />}
+          title="No hay ventas aún"
+          description={
+            cierreDiarioRealizado
               ? "El día ya fue cerrado. Espera hasta mañana."
-              : "Realiza tu primera venta"}
-          </p>
-          {!cierreDiarioRealizado && (
-            <Link
-              to="/add-ventas"
-              className="btn-primary inline-flex items-center gap-2"
-            >
-              <FontAwesomeIcon icon={faPlus} />
-              Nueva Venta
-            </Link>
-          )}
-        </div>
+              : "Realiza tu primera venta"
+          }
+          action={
+            !cierreDiarioRealizado
+              ? { label: "Nueva Venta", to: "/add-ventas" }
+              : undefined
+          }
+        />
       ) : (
-        <div className="card">
-          <DataTableSell data={ventas} />
-        </div>
+        !isLoading &&
+        !error && (
+          <div className="card">
+            <DataTableSell data={ventas} />
+          </div>
+        )
       )}
     </div>
   );

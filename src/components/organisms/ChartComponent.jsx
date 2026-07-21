@@ -1,36 +1,31 @@
 import { useEffect, useRef, useState } from "react";
 import Chart from "chart.js/auto";
 import { useDispatch, useSelector } from "react-redux";
-import { getsells, getbuys } from "@/redux/actionTransaccion";
 import { months } from "@/utils/months";
 import {
   filtrarYGuardarCompras,
   filtrarYGuardarVentas,
 } from "@/redux/actionFiltros";
+import { useVentas, useCompras } from "@/hooks/useTransactions";
 
 const ChartComponent = () => {
   const chartRef = useRef();
   const dispatch = useDispatch();
-  const ventas = useSelector((state) => state.transacciones.ventas);
-  const compras = useSelector((state) => state.transacciones.compras);
+  const { data: ventas = [] } = useVentas();
+  const { data: compras = [] } = useCompras();
   const [newData, setNewData] = useState({});
-  
+
   const ventasFiltradas = useSelector(
     (state) => state.transacciones.VentasFiltradas
   );
   const comprasFiltradas = useSelector(
     (state) => state.transacciones.ComprasFiltradas
   );
-    console.log(ventasFiltradas);
-  useEffect(() => {
-    dispatch(getsells());
-    dispatch(getbuys());
-  }, []);
 
   useEffect(() => {
     dispatch(filtrarYGuardarVentas(ventas, months));
     dispatch(filtrarYGuardarCompras(compras, months));
-  }, [ventas, months, compras, dispatch]);
+  }, [ventas, compras, dispatch]);
 
   console.log(ventasFiltradas);
   const diciembre = ventasFiltradas?.December?.length || 0;

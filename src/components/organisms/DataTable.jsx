@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import {
   flexRender,
   getCoreRowModel,
@@ -10,6 +11,9 @@ import {
 import classNames from 'classnames';
 import { rankItem } from '@tanstack/match-sorter-utils';
 
+import { useDeleteProduct } from '@/hooks/useProducts';
+import { EmptyState } from '@/components/molecules/EmptyState';
+
 import {
   MagnifyingGlassIcon,
   BarsArrowDownIcon,
@@ -19,6 +23,8 @@ import {
   ChevronLeftIcon,
   ChevronDoubleRightIcon,
   ChevronRightIcon,
+  PencilIcon,
+  TrashIcon,
 } from '@heroicons/react/24/solid';
 
 const fuzzyFilter = (row, columnId, value, addMeta) => {
@@ -50,8 +56,16 @@ const DebouncedInput = ({ value: keyWord, onChange, ...props }) => {
 const DataTable = ({ data }) => {
   const [globalFilter, setGlobalFilter] = useState('');
   const [sorting, setSorting] = useState([]);
+  const deleteProduct = useDeleteProduct();
+
+  const handleDelete = (id) => {
+    if (window.confirm('¿Estás seguro de eliminar este producto?')) {
+      deleteProduct.mutate(id);
+    }
+  };
 
   const total = useMemo(() => {
+    if (!Array.isArray(data) || data.length === 0) return 0;
     return data.reduce((accumulator, product) => {
       return accumulator + product.total;
     }, 0);
@@ -115,6 +129,29 @@ const DataTable = ({ data }) => {
         return <div className="font-semibold">{formatted}</div>;
       },
     },
+    {
+      id: 'actions',
+      header: 'Acciones',
+      cell: ({ row }) => (
+        <div className="flex gap-2 items-center justify-center">
+          <Link
+            to={`/products/${row.original._id}`}
+            className="p-2 hover:bg-secondary-700 rounded-lg transition-colors"
+            aria-label="Editar"
+          >
+            <PencilIcon className="w-4 h-4 text-primary-400" />
+          </Link>
+          <button
+            onClick={() => handleDelete(row.original._id)}
+            className="p-2 hover:bg-secondary-700 rounded-lg transition-colors text-red-400"
+            aria-label="Eliminar"
+            type="button"
+          >
+            <TrashIcon className="w-4 h-4" />
+          </button>
+        </div>
+      ),
+    },
   ];
 
   const getStateTable = () => {
@@ -147,6 +184,29 @@ const DataTable = ({ data }) => {
     onSortingChange: setSorting,
   });
 
+  if (!Array.isArray(data) || data.length === 0) {
+    return (
+      <div className="p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <h2 className="text-xl font-semibold text-white">Lista de Productos</h2>
+          <div className="relative">
+            <DebouncedInput
+              type="text"
+              value={globalFilter ?? ''}
+              onChange={(value) => setGlobalFilter(String(value))}
+              placeholder="Buscar productos..."
+            />
+            <MagnifyingGlassIcon className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          </div>
+        </div>
+        <EmptyState
+          title="No hay productos"
+          description="No se encontraron productos en el inventario."
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="p-6">
       {/* Header */}
@@ -176,7 +236,7 @@ const DataTable = ({ data }) => {
                   >
                     {header.isPlaceholder ? null : (
                       <div
-                        className={classnames({
+                        className={classNames({
                           'cursor-pointer select-none flex justify-between items-center':
                             header.column.getCanSort(),
                         })}
@@ -256,7 +316,7 @@ const DataTable = ({ data }) => {
           {table.getPageOptions().map((value, key) => (
             <button
               key={key}
-              className={classnames({
+              className={classNames({
                 'px-3 py-1.5 rounded-lg font-medium transition-colors': true,
                 'bg-primary-600 text-white': value === table.getState().pagination.pageIndex,
                 'bg-secondary-700 text-gray-400 hover:text-white': value !== table.getState().pagination.pageIndex,

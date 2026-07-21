@@ -1,10 +1,13 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { editproduct, addproduct, getproduct } from "@/redux/actionProducts";
-import { getCategories } from "@/redux/actionCategories";
-import { getProveedors } from "@/redux/actionProveedor";
-import { useEffect } from "react";
+import {
+  useCreateProduct,
+  useUpdateProduct,
+  useProduct,
+} from "@/hooks/useProducts";
+import { useCategories } from "@/hooks/useCategories";
+import { useProviders } from "@/hooks/useProviders";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBox,
@@ -12,20 +15,52 @@ import {
   faTags,
   faSave,
   faArrowLeft,
+  faCamera,
 } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "@/components/atoms/Button";
+import { Skeleton } from "@/components/atoms/Skeleton";
+import BarcodeScanner from "@/components/molecules/BarcodeScanner";
 
 export const ProductsFormPage = () => {
-  const { register, handleSubmit, setValue } = useForm();
-  const dispatch = useDispatch();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm();
   const navigation = useNavigate();
   const params = useParams();
+  const isEditing = params.id !== "new";
 
-  const product = useSelector((state) => state.product.products);
-  const categorias = useSelector((state) => state.category.categories);
-  const proveedores = useSelector((state) => state.proveedor.proveedors);
+  const { data: product, isLoading: isLoadingProduct } = useProduct(
+    isEditing ? params.id : null
+  );
+  const { data: categorias = [], isLoading: isLoadingCategories } = useCategories();
+  const { data: proveedores = [], isLoading: isLoadingProviders } = useProviders();
+  const createProduct = useCreateProduct();
+  const updateProduct = useUpdateProduct();
 
-  const onSubmit = handleSubmit((data) => {
+  const [scannerOpen, setScannerOpen] = useState(false);
+
+  const stockValue = watch("stock");
+  const stockNumber = typeof stockValue === "string" ? parseInt(stockValue, 10) : Number(stockValue);
+  const isLowStock = !Number.isNaN(stockNumber) && stockNumber < 2;
+  const isInStock = !Number.isNaN(stockNumber) && stockNumber >= 2;
+
+  useEffect(() => {
+    if (product && isEditing) {
+      setValue("nombre", product.nombre);
+      setValue("descripcion", product.descripcion || "");
+      setValue("precio", product.precio);
+      setValue("stock", product.stock);
+      setValue("categoria", product.categoria?._id || product.categoria || "");
+      setValue("proveedor", product.proveedor?._id || product.proveedor || "");
+      setValue("codigoBarras", product.codigoBarras || "");
+    }
+  }, [product, isEditing, setValue]);
+
+  const onSubmit = handleSubmit(async (data) => {
     if (typeof data.stock === "string") {
       data.stock = parseInt(data.stock, 10);
     }
@@ -33,37 +68,38 @@ export const ProductsFormPage = () => {
       data.precio = parseFloat(data.precio);
     }
 
-    if (params.id !== "new") {
-      dispatch(editproduct(params.id, data));
-    } else {
-      dispatch(addproduct(data));
+    if (!data.codigoBarras || data.codigoBarras.trim() === "") {
+      delete data.codigoBarras;
     }
-    setTimeout(() => {
-      navigation("/products");
-    }, 500);
+
+    if (isEditing) {
+      await updateProduct.mutateAsync({ id: params.id, data });
+    } else {
+      await createProduct.mutateAsync(data);
+    }
+    navigation("/products");
   });
 
-  useEffect(() => {
-    const loadProduct = async () => {
-      if (params.id !== "new") {
-        await dispatch(getproduct(params.id));
-        setValue("nombre", product.nombre);
-        setValue("descripcion", product.descripcion);
-        setValue("precio", product.precio);
-        setValue("stock", product.stock);
-        setValue("categoria", product.categoria?._id || product.categoria);
-        setValue("proveedor", product.proveedor?._id || product.proveedor);
-      }
-    };
-    loadProduct();
-  }, []);
+  const handleScan = (code) => {
+    setValue("codigoBarras", code);
+    setScannerOpen(false);
+  };
 
-  useEffect(() => {
-    dispatch(getCategories());
-    dispatch(getProveedors());
-  }, []);
+  const isLoading = isLoadingProduct || isLoadingCategories || isLoadingProviders;
 
-  const isEditing = params.id !== "new";
+  if (isLoading) {
+    return (
+      <div className="animate-fade-in flex flex-col gap-4">
+        <div className="page-header">
+          <Skeleton variant="text" className="w-48" />
+          <Skeleton variant="text" className="w-64" />
+        </div>
+        <div className="max-w-2xl">
+          <Skeleton variant="rectangular" className="h-[600px]" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="animate-fade-in flex flex-col gap-4">
@@ -103,11 +139,14 @@ export const ProductsFormPage = () => {
                 <input
                   type="text"
                   placeholder="Nombre del producto"
-                  {...register("nombre", { required: true })}
+                  {...register("nombre", { required: "El nombre es obligatorio" })}
                   className="input-field pl-10"
                   autoFocus
                 />
               </div>
+              {errors.nombre && (
+                <p className="mt-1 text-sm text-red-400">{errors.nombre.message}</p>
+              )}
             </div>
 
             {/* Descripción */}
@@ -136,19 +175,33 @@ export const ProductsFormPage = () => {
                     type="number"
                     step="0.01"
                     placeholder="0.00"
-                    {...register("precio", { required: true })}
+                    {...register("precio", { required: "El precio es obligatorio" })}
                     className="input-field pl-10"
                   />
                 </div>
+                {errors.precio && (
+                  <p className="mt-1 text-sm text-red-400">{errors.precio.message}</p>
+                )}
               </div>
               <div>
                 <label className="label">Stock</label>
-                <input
-                  type="number"
-                  placeholder="0"
-                  {...register("stock", { required: true })}
-                  className="input-field"
-                />
+                <div className="flex items-center gap-3">
+                  <input
+                    type="number"
+                    placeholder="0"
+                    {...register("stock", { required: "El stock es obligatorio" })}
+                    className="input-field"
+                  />
+                  {isLowStock && (
+                    <span className="badge badge-danger">Stock Bajo</span>
+                  )}
+                  {isInStock && (
+                    <span className="badge badge-success">En Stock</span>
+                  )}
+                </div>
+                {errors.stock && (
+                  <p className="mt-1 text-sm text-red-400">{errors.stock.message}</p>
+                )}
               </div>
             </div>
 
@@ -189,6 +242,28 @@ export const ProductsFormPage = () => {
               </select>
             </div>
 
+            {/* Código de barras */}
+            <div>
+              <label className="label">Código de barras</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="Código de barras"
+                  {...register("codigoBarras")}
+                  className="input-field flex-1"
+                />
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => setScannerOpen(true)}
+                  aria-label="Abrir escáner de códigos"
+                  className="!px-3"
+                >
+                  <FontAwesomeIcon icon={faCamera} />
+                </Button>
+              </div>
+            </div>
+
             {/* Buttons */}
             <div className="flex justify-end gap-4 !pt-4 border-t border-secondary-700">
               <Link to="/products" className="btn-secondary">
@@ -202,6 +277,12 @@ export const ProductsFormPage = () => {
           </form>
         </div>
       </div>
+
+      <BarcodeScanner
+        isOpen={scannerOpen}
+        onClose={() => setScannerOpen(false)}
+        onDetect={handleScan}
+      />
     </div>
   );
 };

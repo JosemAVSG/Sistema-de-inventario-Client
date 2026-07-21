@@ -14,12 +14,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { cerrarDia } from "@/redux/actionTransaccion";
+import { useVentas, useCompras } from "@/hooks/useTransactions";
 
 const Navbar = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const user = useSelector((state) => state.auth.user);
-  const ventas = useSelector((state) => state.transacciones.ventas);
-  const compras = useSelector((state) => state.transacciones.compras);
+  const { data: ventas = [] } = useVentas();
+  const { data: compras = [] } = useCompras();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -55,50 +56,6 @@ const Navbar = () => {
             <span className="text-xl font-bold text-white hidden sm:block">
               Inventario<span className="text-primary-400">Pro</span>
             </span>
-          </div>
-
-          {/* Navigation Links */}
-          <div className="hidden md:flex items-center gap-6">
-            {isAuthenticated && (
-              <>
-                <NavLink
-                  to="/home"
-                  className={({ isActive }) =>
-                    `text-sm font-medium transition-colors duration-200 ${
-                      isActive
-                        ? "text-primary-400"
-                        : "text-gray-400 hover:text-white"
-                    }`
-                  }
-                >
-                  Dashboard
-                </NavLink>
-                <NavLink
-                  to="/products"
-                  className={({ isActive }) =>
-                    `text-sm font-medium transition-colors duration-200 ${
-                      isActive
-                        ? "text-primary-400"
-                        : "text-gray-400 hover:text-white"
-                    }`
-                  }
-                >
-                  Productos
-                </NavLink>
-                <NavLink
-                  to="/ventas"
-                  className={({ isActive }) =>
-                    `text-sm font-medium transition-colors duration-200 ${
-                      isActive
-                        ? "text-primary-400"
-                        : "text-gray-400 hover:text-white"
-                    }`
-                  }
-                >
-                  Ventas
-                </NavLink>
-              </>
-            )}
           </div>
 
           {/* Right Section */}
@@ -216,38 +173,6 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-
-      {/* Mobile Menu */}
-      {isOpen && isAuthenticated && (
-        <div className="md:hidden bg-secondary-800 border-t border-secondary-700">
-          <div className="px-4 py-3 space-y-1">
-            <NavLink
-              to="/home"
-              className="block px-4 py-2 text-sm text-gray-300 hover:bg-secondary-700 rounded-lg"
-            >
-              Dashboard
-            </NavLink>
-            <NavLink
-              to="/products"
-              className="block px-4 py-2 text-sm text-gray-300 hover:bg-secondary-700 rounded-lg"
-            >
-              Productos
-            </NavLink>
-            <NavLink
-              to="/ventas"
-              className="block px-4 py-2 text-sm text-gray-300 hover:bg-secondary-700 rounded-lg"
-            >
-              Ventas
-            </NavLink>
-            <NavLink
-              to="/compras"
-              className="block px-4 py-2 text-sm text-gray-300 hover:bg-secondary-700 rounded-lg"
-            >
-              Compras
-            </NavLink>
-          </div>
-        </div>
-      )}
     </nav>
   );
 };

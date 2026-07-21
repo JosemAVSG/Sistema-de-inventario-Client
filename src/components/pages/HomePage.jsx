@@ -9,10 +9,12 @@ import {
   faChartLine,
   faExclamationTriangle,
 } from "@fortawesome/free-solid-svg-icons";
-import { useSelector, useDispatch } from "react-redux";
-import { useEffect, useMemo } from "react";
-import { getproducts } from "@/redux/actionProducts";
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
+import { useProducts } from "@/hooks/useProducts";
+import { useVentas, useCompras } from "@/hooks/useTransactions";
+import { Skeleton } from "@/components/atoms/Skeleton";
+import { EmptyState } from "@/components/molecules/EmptyState";
 import LastSalesTable from "@/components/organisms/LastSell";
 import { Card } from "../atoms/Card";
 
@@ -20,20 +22,18 @@ export const HomePage = () => {
   const startDate = "2023-12-01";
   const endDate = "2023-12-31";
 
-  const ventas = useSelector((state) => state.transacciones.ventas);
-  const compras = useSelector((state) => state.transacciones.compras);
-  const salesWithinRange = ventas.filter((ventas) => {
-    return ventas.createdAt >= startDate && ventas.createdAt <= endDate;
-  });
-  const buyWithinRange = compras.filter((compras) => {
-    return compras.createdAt >= startDate && compras.createdAt <= endDate;
-  });
-  const products = useSelector((state) => state.product.products);
-  const dispatch = useDispatch();
+  const { data: products = [], isLoading: isLoadingProducts } = useProducts();
+  const { data: ventas = [], isLoading: isLoadingVentas } = useVentas();
+  const { data: compras = [], isLoading: isLoadingCompras } = useCompras();
 
-  useEffect(() => {
-    dispatch(getproducts());
-  }, []);
+  const isLoading = isLoadingProducts || isLoadingVentas || isLoadingCompras;
+
+  const salesWithinRange = ventas.filter((venta) => {
+    return venta.createdAt >= startDate && venta.createdAt <= endDate;
+  });
+  const buyWithinRange = compras.filter((compra) => {
+    return compra.createdAt >= startDate && compra.createdAt <= endDate;
+  });
 
   // Calcular el total general
   const total = useMemo(() => {
@@ -116,8 +116,47 @@ export const HomePage = () => {
     },
   ];
 
+  if (isLoading) {
+    return (
+      <div className="animate-fade-in flex flex-col gap-4">
+        <div className="page-header">
+          <Skeleton variant="text" className="w-48" />
+          <Skeleton variant="text" className="w-64" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <Skeleton key={index} variant="rectangular" className="h-28" />
+          ))}
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <Skeleton variant="rectangular" className="lg:col-span-2 h-80" />
+          <Skeleton variant="rectangular" className="h-80" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!isLoading && products.length === 0 && ventas.length === 0 && compras.length === 0) {
+    return (
+      <div className="animate-fade-in flex flex-col gap-4">
+        <div className="page-header">
+          <h1 className="page-title">Dashboard</h1>
+          <p className="page-subtitle">
+            Bienvenido al panel de control de tu sistema de inventario
+          </p>
+        </div>
+        <EmptyState
+          icon={<FontAwesomeIcon icon={faBox} className="text-4xl" />}
+          title="Sin datos aún"
+          description="Agrega productos, ventas o compras para ver el dashboard"
+          action={{ label: "Nuevo Producto", to: "/add-products" }}
+        />
+      </div>
+    );
+  }
+
   return (
-    <div className="animate-fade-in flex flex-col gap-4 pr-10">
+    <div className="animate-fade-in flex flex-col gap-4">
       {/* Page Header */}
       <div className="page-header">
         <h1 className="page-title">Dashboard</h1>

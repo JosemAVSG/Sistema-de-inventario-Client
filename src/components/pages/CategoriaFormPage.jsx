@@ -1,43 +1,55 @@
-import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { addCategory, editCategory, getCategory } from '@/redux/actionCategories';
 import { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTags, faSave, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "@/components/atoms/Button";
+import { Skeleton } from "@/components/atoms/Skeleton";
+import {
+  useCategory,
+  useCreateCategory,
+  useUpdateCategory,
+} from "@/hooks/useCategories";
 
 export const CategoriaFormPage = () => {
   const { register, handleSubmit, setValue } = useForm();
-  const dispatch = useDispatch();
   const navigation = useNavigate();
   const params = useParams();
-  
-  const category = useSelector((state) => state.category.category);
+  const isEditing = params.id !== "new";
 
-  const onSubmit = handleSubmit((data) => {
-    if (params.id !== 'new') {
-      dispatch(editCategory(params.id, data));
+  const { data: category, isLoading } = useCategory(isEditing ? params.id : null);
+  const createCategory = useCreateCategory();
+  const updateCategory = useUpdateCategory();
+
+  const onSubmit = handleSubmit(async (data) => {
+    if (isEditing) {
+      await updateCategory.mutateAsync({ id: params.id, data });
     } else {
-      dispatch(addCategory(data));
+      await createCategory.mutateAsync(data);
     }
-    setTimeout(() => {
-      navigation("/categoria");
-    }, 500);
+    navigation("/categoria");
   });
 
   useEffect(() => {
-    const loadCategory = async () => {
-      if (params.id !== 'new') {
-        await dispatch(getCategory(params.id));
-        setValue("name", category.name);
-        setValue("descripcion", category.descripcion);
-      }
-    };
-    loadCategory();
-  }, []);
+    if (category && isEditing) {
+      setValue("name", category.name || category.nombre || "");
+      setValue("descripcion", category.descripcion || "");
+    }
+  }, [category, isEditing, setValue]);
 
-  const isEditing = params.id !== "new";
+  if (isLoading) {
+    return (
+      <div className="animate-fade-in flex flex-col gap-4">
+        <div className="page-header">
+          <Skeleton variant="text" className="w-48" />
+          <Skeleton variant="text" className="w-64" />
+        </div>
+        <div className="max-w-2xl">
+          <Skeleton variant="rectangular" className="h-96" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="animate-fade-in">

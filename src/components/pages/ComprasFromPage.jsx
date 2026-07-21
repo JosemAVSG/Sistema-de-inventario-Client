@@ -1,10 +1,9 @@
-import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
-import { addTransaccion } from "@/redux/actionTransaccion";
-import { getproducts } from "@/redux/actionProducts";
-import { getProveedors } from "@/redux/actionProveedor";
 import { useEffect, useState, useMemo } from "react";
+import { useCreateTransaction } from "@/hooks/useTransactions";
+import { useProducts } from "@/hooks/useProducts";
+import { useProviders } from "@/hooks/useProviders";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
   faPlus, 
@@ -19,11 +18,11 @@ import { Button } from "@/components/atoms/Button";
 
 export const ComprasFromPage = () => {
   const { register, handleSubmit } = useForm();
-  const dispatch = useDispatch();
   const navigation = useNavigate();
 
-  const products = useSelector((state) => state.product.products);
-  const proveedores = useSelector((state) => state.proveedor.proveedors);
+  const { data: products = [] } = useProducts();
+  const { data: proveedores = [] } = useProviders();
+  const createTransaction = useCreateTransaction();
   const [productosCompra, setproductosCompra] = useState([]);
 
   const total = useMemo(() => {
@@ -39,7 +38,7 @@ export const ComprasFromPage = () => {
     }).format(value);
   };
 
-  const onSubmit = handleSubmit((data) => {
+  const onSubmit = handleSubmit(async (data) => {
     const productosSinNombre = productosCompra.map(producto => {
       const { nombre, ...resto } = producto;
       return resto;
@@ -51,17 +50,10 @@ export const ComprasFromPage = () => {
       precioTotal: total,
       proveedor: data.proveedor,
     };
-    
-    dispatch(addTransaccion(datos));
-    setTimeout(() => {
-      navigation("/compras");
-    }, 500);
-  });
 
-  useEffect(() => {
-    dispatch(getproducts());
-    dispatch(getProveedors());
-  }, []);
+    await createTransaction.mutateAsync(datos);
+    navigation("/compras");
+  });
 
   const handleSelectChange = (event) => {
     const selectedProductId = event.target.value;

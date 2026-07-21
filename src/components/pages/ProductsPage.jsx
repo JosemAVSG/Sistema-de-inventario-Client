@@ -1,18 +1,45 @@
-import { useEffect } from "react";
-import { getproducts } from "@/redux/actionProducts";
-import { useDispatch, useSelector } from "react-redux";
+import { useProducts } from "@/hooks/useProducts";
 import DataTable from "@/components/organisms/DataTable";
+import { Skeleton } from "@/components/atoms/Skeleton";
+import { EmptyState } from "@/components/molecules/EmptyState";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faBox } from "@fortawesome/free-solid-svg-icons";
 
 export const ProductsPage = () => {
-  const products = useSelector((state) => state.product.products);
-  const dispatch = useDispatch();
+  const { data: products = [], isLoading, error } = useProducts();
 
-  useEffect(() => {
-    dispatch(getproducts());
-  }, [dispatch]);
+  if (isLoading) {
+    return (
+      <div className="animate-fade-in flex flex-col gap-4">
+        <div className="page-header">
+          <Skeleton variant="text" className="w-48" />
+          <Skeleton variant="text" className="w-64" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <Skeleton variant="rectangular" className="h-24" />
+          <Skeleton variant="rectangular" className="h-24" />
+          <Skeleton variant="rectangular" className="h-24" />
+        </div>
+        <Skeleton variant="rectangular" className="h-96" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="animate-fade-in flex flex-col gap-4">
+        <div className="page-header">
+          <h1 className="page-title">Productos</h1>
+          <p className="page-subtitle">Gestiona tu inventario de productos</p>
+        </div>
+        <div className="card p-8 text-center text-red-400">
+          <p>Error al cargar los productos. Intenta de nuevo más tarde.</p>
+          <p className="text-sm text-gray-400 mt-2">{error.message}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="animate-fade-in flex flex-col gap-4">
@@ -79,24 +106,12 @@ export const ProductsPage = () => {
 
       {/* Products Table */}
       {products.length === 0 ? (
-        <div className="card p-12 text-center">
-          <div className="p-4 bg-secondary-700/50 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-            <FontAwesomeIcon icon={faBox} className="text-gray-500 text-3xl" />
-          </div>
-          <h3 className="text-xl font-semibold text-white mb-2">
-            No hay productos aún
-          </h3>
-          <p className="text-gray-400 mb-6">
-            Comienza agregando tu primer producto al inventario
-          </p>
-          <Link
-            to="/add-products"
-            className="btn-primary inline-flex items-center gap-2"
-          >
-            <FontAwesomeIcon icon={faPlus} />
-            Agregar Producto
-          </Link>
-        </div>
+        <EmptyState
+          icon={<FontAwesomeIcon icon={faBox} className="text-4xl" />}
+          title="No hay productos aún"
+          description="Comienza agregando tu primer producto al inventario"
+          action={{ label: "Agregar Producto", to: "/add-products" }}
+        />
       ) : (
         <div className="card">
           <DataTable data={products} />

@@ -1,10 +1,11 @@
-import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { useVentas } from "@/hooks/useTransactions";
+import { Skeleton } from "@/components/atoms/Skeleton";
 
 const LastSalesTable = () => {
-  const salesData = useSelector((state) => state.transacciones.ventas);
+  const { data: salesData = [], isLoading } = useVentas();
 
   const formatCurrency = (value) => {
     return new Intl.NumberFormat("es-CO", {
@@ -27,6 +28,16 @@ const LastSalesTable = () => {
   const lastFiveSales = [...salesData]
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
     .slice(0, 5);
+
+  if (isLoading) {
+    return (
+      <div className="h-full space-y-3">
+        {Array.from({ length: 3 }).map((_, index) => (
+          <Skeleton key={index} variant="rectangular" className="h-20" />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="h-full">

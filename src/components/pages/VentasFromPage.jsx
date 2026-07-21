@@ -1,9 +1,8 @@
-import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
-import { addTransaccion } from "@/redux/actionTransaccion";
-import { getproducts } from "@/redux/actionProducts";
 import { useEffect, useState, useMemo } from "react";
+import { useCreateTransaction } from "@/hooks/useTransactions";
+import { useProducts } from "@/hooks/useProducts";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { 
   faPlus, 
@@ -17,10 +16,10 @@ import { Button } from "@/components/atoms/Button";
 
 export const VentasFromPage = () => {
   const { register, handleSubmit } = useForm();
-  const dispatch = useDispatch();
   const navigation = useNavigate();
 
-  const products = useSelector((state) => state.product.products);
+  const { data: products = [] } = useProducts();
+  const createTransaction = useCreateTransaction();
   const [productosVenta, setProductosVenta] = useState([]);
   const [agotadoMessage, setAgotadoMessage] = useState("");
   const [descuento, setDescuento] = useState(0);
@@ -50,7 +49,7 @@ export const VentasFromPage = () => {
     }).format(value);
   };
 
-  const onSubmit = handleSubmit((data) => {
+  const onSubmit = handleSubmit(async (data) => {
     const productosSinNombre = productosVenta.map(producto => {
       const { nombre, precioVenta, ...resto } = producto;
       return resto;
@@ -62,16 +61,10 @@ export const VentasFromPage = () => {
       precioTotal: totalConDescuento,
       cliente: data.cliente
     };
-    
-    dispatch(addTransaccion(datos));
-    setTimeout(() => {
-      navigation("/ventas");
-    }, 500);
-  });
 
-  useEffect(() => {
-    dispatch(getproducts());
-  }, []);
+    await createTransaction.mutateAsync(datos);
+    navigation("/ventas");
+  });
 
   useEffect(() => {
     let timeoutId;

@@ -1,50 +1,58 @@
-import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import {
-  addProveedor,
-  getProveedor,
-  editProveedor,
-} from "@/redux/actionProveedor";
 import { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserTie, faMapMarkerAlt, faPhone, faEnvelope, faSave, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "@/components/atoms/Button";
+import { Skeleton } from "@/components/atoms/Skeleton";
+import {
+  useProvider,
+  useCreateProvider,
+  useUpdateProvider,
+} from "@/hooks/useProviders";
 
 export const ProveedorFormPage = () => {
   const { register, handleSubmit, setValue } = useForm();
-  const dispatch = useDispatch();
   const navigation = useNavigate();
   const params = useParams();
+  const isEditing = params.id !== "new";
 
-  const proveedor = useSelector((state) => state.proveedor.proveedor);
+  const { data: proveedor, isLoading } = useProvider(isEditing ? params.id : null);
+  const createProvider = useCreateProvider();
+  const updateProvider = useUpdateProvider();
 
-  const onSubmit = handleSubmit((data) => {
-    if (params.id !== "new") {
-      dispatch(editProveedor(params.id, data));
+  const onSubmit = handleSubmit(async (data) => {
+    if (isEditing) {
+      await updateProvider.mutateAsync({ id: params.id, data });
     } else {
-      dispatch(addProveedor(data));
+      await createProvider.mutateAsync(data);
     }
-    setTimeout(() => {
-      navigation("/proveedor");
-    }, 500);
+    navigation("/proveedor");
   });
 
   useEffect(() => {
-    const loadProveedor = async () => {
-      if (params.id !== "new") {
-        await dispatch(getProveedor(params.id));
-        setValue("nombre", proveedor.nombre);
-        setValue("empresa", proveedor.empresa);
-        setValue("direccion", proveedor.direccion);
-        setValue("telefono", proveedor.telefono);
-        setValue("email", proveedor.email);
-      }
-    };
-    loadProveedor();
-  }, []);
+    if (proveedor && isEditing) {
+      setValue("nombre", proveedor.nombre || "");
+      setValue("empresa", proveedor.empresa || "");
+      setValue("direccion", proveedor.direccion || "");
+      setValue("telefono", proveedor.telefono || "");
+      setValue("email", proveedor.email || "");
+    }
+  }, [proveedor, isEditing, setValue]);
 
-  const isEditing = params.id !== "new";
+  if (isLoading) {
+    return (
+      <div className="animate-fade-in flex flex-col gap-4">
+        <div className="page-header">
+          <Skeleton variant="text" className="w-48" />
+          <Skeleton variant="text" className="w-64" />
+        </div>
+        <div className="max-w-2xl">
+          <Skeleton variant="rectangular" className="h-[600px]" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="animate-fade-in flex flex-col gap-4">
