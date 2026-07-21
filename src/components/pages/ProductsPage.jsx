@@ -82,9 +82,9 @@ export const ProductsPage = () => {
               />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Unidades en Stock</p>
+              <p className="text-sm text-gray-400">Productos con Stock</p>
               <p className="text-2xl font-bold text-white">
-                {products.reduce((sum, p) => sum + (Number(p.stock) || 0), 0)}
+                {products.filter((p) => p.stock >= 2).length}
               </p>
             </div>
           </div>
