@@ -112,7 +112,7 @@ export const ProveedorPage = () => {
 
                 <div className="flex gap-2 mt-4 pt-4 border-t border-secondary-700">
                   <Link
-                    to={`/proveedor/${proveedor.id}`}
+                    to={`/proveedor/${proveedor._id}`}
                     className="flex-1 text-center py-2 text-sm text-primary-400 hover:bg-primary-500/10 rounded-lg transition-colors"
                   >
                     Editar
