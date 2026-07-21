@@ -63,8 +63,14 @@ export const CategoriaPage = () => {
             {categories.map((category) => (
               <div key={category._id} className="card p-4 card-hover group">
                 <div className="flex items-start justify-between">
-                  <div className="p-3 bg-primary-500/20 rounded-xl group-hover:bg-primary-500/30 transition-colors">
-                    <FontAwesomeIcon icon={faTags} className="text-primary-400" />
+                  <div className="p-3 flex items-center gap-2 bg-primary-500/20 rounded-xl group-hover:bg-primary-500/30 transition-colors">
+                    <FontAwesomeIcon
+                      icon={faTags}
+                      className="text-primary-400"
+                    />
+                    <h3 className="text-lg font-semibold text-white">
+                      {category.name || category.nombre}
+                    </h3>
                   </div>
                   <div className="flex gap-2">
                     <Link
@@ -75,9 +81,7 @@ export const CategoriaPage = () => {
                     </Link>
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold text-white mt-4">
-                  {category.name || category.nombre}
-                </h3>
+
                 <p className="text-sm text-gray-400 mt-1 line-clamp-2">
                   {category.descripcion || "Sin descripción"}
                 </p>
