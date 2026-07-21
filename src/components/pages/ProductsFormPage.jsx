@@ -31,7 +31,7 @@ export const ProductsFormPage = () => {
   } = useForm();
   const navigation = useNavigate();
   const params = useParams();
-  const isEditing = params.id !== "new";
+  const isEditing = params.id && params.id !== "new";
 
   const { data: product, isLoading: isLoadingProduct } = useProduct(
     isEditing ? params.id : null
@@ -94,7 +94,7 @@ export const ProductsFormPage = () => {
           <Skeleton variant="text" className="w-48" />
           <Skeleton variant="text" className="w-64" />
         </div>
-        <div className="max-w-2xl">
+        <div className="flex flex-col gap-4">
           <Skeleton variant="rectangular" className="h-[600px]" />
         </div>
       </div>
@@ -126,7 +126,7 @@ export const ProductsFormPage = () => {
       </div>
 
       {/* Form Card */}
-      <div className="max-w-2xl gap-4">
+      <div>
         <div className="card p-6">
           <form onSubmit={onSubmit} className="space-y-6">
             {/* Nombre */}

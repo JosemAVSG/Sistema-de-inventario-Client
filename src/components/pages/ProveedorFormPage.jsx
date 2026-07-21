@@ -15,7 +15,7 @@ export const ProveedorFormPage = () => {
   const { register, handleSubmit, setValue } = useForm();
   const navigation = useNavigate();
   const params = useParams();
-  const isEditing = params.id !== "new";
+  const isEditing = params.id && params.id !== "new";
 
   const { data: proveedor, isLoading } = useProvider(isEditing ? params.id : null);
   const createProvider = useCreateProvider();
@@ -47,7 +47,7 @@ export const ProveedorFormPage = () => {
           <Skeleton variant="text" className="w-48" />
           <Skeleton variant="text" className="w-64" />
         </div>
-        <div className="max-w-2xl">
+        <div className="flex flex-col gap-4">
           <Skeleton variant="rectangular" className="h-[600px]" />
         </div>
       </div>
@@ -79,7 +79,7 @@ export const ProveedorFormPage = () => {
       </div>
 
       {/* Form Card */}
-      <div className="max-w-2xl">
+      <div className="flex flex-col gap-4">
         <div className="card p-6">
           <form onSubmit={onSubmit} className="space-y-6">
             {/* Nombre */}

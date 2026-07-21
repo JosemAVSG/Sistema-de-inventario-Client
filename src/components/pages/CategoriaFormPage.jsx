@@ -15,7 +15,7 @@ export const CategoriaFormPage = () => {
   const { register, handleSubmit, setValue } = useForm();
   const navigation = useNavigate();
   const params = useParams();
-  const isEditing = params.id !== "new";
+  const isEditing = params.id && params.id !== "new";
 
   const { data: category, isLoading } = useCategory(isEditing ? params.id : null);
   const createCategory = useCreateCategory();
@@ -44,7 +44,7 @@ export const CategoriaFormPage = () => {
           <Skeleton variant="text" className="w-48" />
           <Skeleton variant="text" className="w-64" />
         </div>
-        <div className="max-w-2xl">
+        <div>
           <Skeleton variant="rectangular" className="h-96" />
         </div>
       </div>
@@ -76,7 +76,7 @@ export const CategoriaFormPage = () => {
       </div>
 
       {/* Form Card */}
-      <div className="max-w-2xl">
+      <div>
         <div className="card p-6">
           <form onSubmit={onSubmit} className="space-y-6">
             {/* Nombre */}
