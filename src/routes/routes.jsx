@@ -13,10 +13,12 @@ import { VentasFromPage } from "@/components/pages/VentasFromPage";
 import { VentasPage } from "@/components/pages/VentasPage";
 import { ComprasPage } from "@/components/pages/ComprasPage";
 import { ComprasFromPage } from "@/components/pages/ComprasFromPage";
+import { GoogleCallbackPage } from "@/components/pages/GoogleCallbackPage";
 
 export const publicRoutes = [
   { path: "/", element: <LoginPage /> },
   { path: "/register", element: <RegisterPage /> },
+  { path: "/auth/google/success", element: <GoogleCallbackPage /> },
   { path: "/*", element: <Error404 /> },
 ];
 
