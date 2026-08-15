@@ -5,7 +5,6 @@ import { signinUser, signinFailure } from "@/redux/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faBarcode,
   faEnvelope,
   faLock,
   faEye,
@@ -69,9 +68,21 @@ export const LoginPage = () => {
       </div>
 
       <div className="relative grid min-h-screen w-full lg:grid-cols-2">
-        {/* Left hero panel (lg+ only) */}
-        <div className="hidden lg:flex flex-col justify-between p-10 xl:p-16">
-          <div>
+        {/* Left hero panel (lg+ only) — full-height image background */}
+        <div className="relative hidden lg:flex flex-col justify-between overflow-hidden">
+          {/* Full-height hero image */}
+          <img
+            src="/login-hero.jpg"
+            alt="Trabajadora sonriendo en un almacén"
+            className="absolute inset-0 h-full w-full object-cover"
+            loading="eager"
+          />
+          {/* Overlay for legibility */}
+          <div className="absolute inset-0 bg-gradient-to-t from-secondary-900/90 via-secondary-900/40 to-secondary-900/20"></div>
+          <div className="absolute inset-0 bg-secondary-900/20"></div>
+
+          {/* Content on top */}
+          <div className="relative flex flex-col justify-between h-full p-10 xl:p-16">
             <div className="flex items-center gap-4">
               <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary-500 to-primary-700 rounded-2xl shadow-lg shrink-0">
                 <FontAwesomeIcon
@@ -81,38 +92,17 @@ export const LoginPage = () => {
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-white">InventarioPro</h1>
-                <p className="text-gray-400 mt-1">
+                <p className="text-gray-200 mt-1">
                   Control total de tu inventario
                 </p>
               </div>
             </div>
 
-            {/* Signature — barcode stock panel */}
-            <div className="mt-16 max-w-sm bg-secondary-800 rounded-xl border border-white/10 overflow-hidden">
-              <div className="divide-y divide-white/10">
-                <div className="flex items-center gap-3 px-5 py-4">
-                  <span className="w-0.5 h-4 bg-primary-400 rounded-full" />
-                  <span className="text-gray-300 font-medium">Productos</span>
-                </div>
-                <div className="flex items-center gap-3 px-5 py-4">
-                  <span className="w-0.5 h-4 bg-secondary-600 rounded-full" />
-                  <span className="text-gray-400">Proveedores</span>
-                </div>
-                <div className="flex items-center gap-3 px-5 py-4">
-                  <span className="w-0.5 h-4 bg-secondary-600 rounded-full" />
-                  <span className="text-gray-400">Ventas y compras</span>
-                </div>
-              </div>
-              <div className="border-t border-white/10 px-5 py-4 flex justify-center text-gray-400">
-                <FontAwesomeIcon icon={faBarcode} className="text-2xl" />
-              </div>
-            </div>
+            {/* Footer small print */}
+            <p className="text-gray-300 text-sm">
+              © 2024 InventarioPro. Todos los derechos reservados.
+            </p>
           </div>
-
-          {/* Footer small print */}
-          <p className="text-gray-500 text-sm">
-            © 2024 InventarioPro. Todos los derechos reservados.
-          </p>
         </div>
 
         {/* Right form panel */}
