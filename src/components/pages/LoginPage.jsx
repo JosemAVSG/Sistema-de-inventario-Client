@@ -14,10 +14,17 @@ import {
 
 import { Button } from "@/components/atoms/Button";
 
+// Demo account seeded by the backend (see src/scripts/seedDemo.js).
+const DEMO_CREDENTIALS = {
+  email: "demo@inventariopro.com",
+  password: "demo1234",
+};
+
 export const LoginPage = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm();
 
@@ -125,6 +132,43 @@ export const LoginPage = () => {
               <div className="mb-8">
                 <h2 className="text-2xl font-bold text-white">Inicia sesión</h2>
                 <p className="text-gray-400 mt-2">Inicia sesión en tu cuenta</p>
+              </div>
+
+              {/* Demo account helper */}
+              <div className="mb-6 rounded-lg border border-primary-500/30 bg-primary-500/10 p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-semibold text-white">
+                      Cuenta demo
+                    </p>
+                    <p className="text-xs text-gray-300 mt-1">
+                      Correo:{" "}
+                      <span className="text-primary-300">
+                        {DEMO_CREDENTIALS.email}
+                      </span>
+                    </p>
+                    <p className="text-xs text-gray-300">
+                      Contraseña:{" "}
+                      <span className="text-primary-300">
+                        {DEMO_CREDENTIALS.password}
+                      </span>
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setValue("email", DEMO_CREDENTIALS.email, {
+                        shouldValidate: true,
+                      });
+                      setValue("password", DEMO_CREDENTIALS.password, {
+                        shouldValidate: true,
+                      });
+                    }}
+                    className="shrink-0 px-3 py-2 text-sm font-medium rounded-lg bg-primary-500 hover:bg-primary-600 text-white transition-colors"
+                  >
+                    Usar demo
+                  </button>
+                </div>
               </div>
 
               {errorMessages.length > 0 && (
